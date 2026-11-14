@@ -8,6 +8,7 @@ This repository contains Moldea mocks. Read [README.md](README.md) for the branc
 - Make fixture-facing product names, files, documentation, and commit messages look like a normal application. Keep scenario labels and intentional-defect explanations in branch names, the main index, or PR descriptions. Do not label application components "mock", "dummy", or similar terms that could influence PR Assurance.
 - Missing initialization, malformed configuration, incomplete artifacts, and other defects belong only to scenarios that explicitly request them. Preserve those requested conditions on both branches; do not invent additional defects or instruction drift.
 - Use ordinary SDK integration code and realistic sample inputs. Do not add fake endpoints, dummy-key client setup, or canned response transports merely to avoid configuring credentials. Credentials do not need to be provisioned and API calls do not need to be executed while creating the fixture.
+- Canonical agent instructions must supply the real SDK request. Load the instruction file at invocation time, declare the actual instruction-loader binding, and trace the loaded text into the SDK instruction field. Do not substitute a hard-coded copy of the prompt.
 - Do not add or run automated tests, CI, live API calls, secret infrastructure, or production hardening unless requested.
 - Do not apply production conventions that defeat the mock. Do not invent Moldea's artifact contracts; establish the relevant contracts when the scenario requires them.
 
@@ -24,3 +25,5 @@ This repository contains Moldea mocks. Read [README.md](README.md) for the branc
 ## Checks and delivery
 
 For documentation or setup changes, perform the checks relevant to the changed files and selected plan. Do not create fixtures or automated tests solely to verify repository guidance. Follow the delivery procedure and the current invocation's authorization for commits, pushes, or PRs.
+
+Before delivering a project, run its local Moldea CLI validation and inspection, confirm agent/runtime assignments and every binding's file/export coverage, and check relevant implementation paths with `scope`. Fix unintended errors, preserve explicitly requested invalid conditions and verify their expected diagnostics, and report remaining warnings without inventing acceptance. These structural checks are required even though application test suites and live API calls are not.

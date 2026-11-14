@@ -42,7 +42,8 @@ After delivery, keep base stable. Candidate remains identical until the develope
 4. Start the scenario's base branch from `main`. Put the mock project at the repository root and use the stack, package manager, complexity, and artifacts requested for that scenario.
 5. Prepare and commit the complete project on base, then create candidate at that exact commit. Verify the branch tips match and their content diff is empty. Do not add candidate-only changes unless the developer explicitly requests them.
 6. Record the purpose, explicitly requested defects or omissions, and shared starting behavior in the index on `main`. Keep the index current when scenarios are created. Create a candidate-to-base PR only when requested after the developer has selected changes; keep mock projects out of `main`.
-7. Before handing off a completed scenario, release its branches from the construction worktree. When that checkout is clean, run `git switch --detach` there to retain the current commit and files while making the candidate available in the original checkout. Keep the scenario branches and worktree; report dirty or unrelated work rather than changing it. The original checkout stays on the user's selected branch.
+7. Use the project's local Moldea CLI to run `validate --json` and `inspect --json` before handoff. Confirm agent/runtime assignments and file/export coverage for every declared binding. Use `scope` on relevant implementation paths to confirm owner detection. Resolve unintended errors and report every remaining warning; never invent warning acceptance. Explicitly invalid scenarios must produce their expected diagnostics and retain their requested conditions.
+8. Before handing off a completed scenario, release its branches from the construction worktree. When that checkout is clean, run `git switch --detach` there to retain the current commit and files while making the candidate available in the original checkout. Keep the scenario branches and worktree; report dirty or unrelated work rather than changing it. The original checkout stays on the user's selected branch.
 
 Git permits a branch to be checked out in one worktree at a time. If the editor reports that a candidate is already checked out elsewhere, detach the clean construction checkout at its existing commit, then retry the branch switch in the original checkout.
 
@@ -53,6 +54,8 @@ Include only files appropriate to the requested scenario. Shared documentation, 
 Preserve explicitly requested invalid conditions; otherwise deliver a correct, coherent project. Fixture contents should look like normal applications: use realistic product names, ordinary SDK integrations, product documentation, and natural commit messages. Keep scenario labels, intentional-defect explanations, and PR Assurance expectations in descriptive branch names, the index on `main`, or PR descriptions. Do not name application files or components "mock", "dummy", or similar labels that disclose the exercise.
 
 Realistic sample inputs are fine. Use the SDK's normal integration code rather than adding fake endpoints, dummy-key client configuration, or canned response transports to make the application offline. Creating a fixture does not require configuring credentials or executing its API calls. Tests, CI, live API calls, secret infrastructure, and production hardening are unnecessary unless explicitly requested. For an all-artifacts scenario, establish Moldea's actual artifact contracts when creating it rather than assuming a fixed list here.
+
+Canonical agent instructions must feed the actual SDK invocation. Load the instruction file at runtime and declare its real instruction-loader binding; do not maintain a parallel hard-coded prompt. Trace the loaded text into the SDK's instruction field as well as checking binding discovery. Moldea CLI validation and inspection are required structural checks, independent of the policy against adding application test suites. Initialized SDK projects declare the CLI as a local development dependency; negative initialization cases may use a non-persisted project-local installation to preserve their tracked starting state.
 
 ### Starting a session on a fixture branch
 
@@ -83,11 +86,15 @@ The prefix identifies both branches using the suffixes above.
 
 Both branches print `Hello, world!` and point to the same commit. They contain only the package manifest, source, license, and ignore rules: no Moldea initialization, shared guidance, planning files, or external dependencies.
 
+CLI `13.0.4` validation confirms the intended `MOLDEA_MANIFEST_MISSING` and `MOLDEA_PROJECT_FILE_MISSING` errors.
+
 Run either branch with `npm start`. No dependency installation is needed. The developer chooses later changes to `test/001-init-missing/candidate` and compares them against `test/001-init-missing/base`. Use the startup prompt above for fresh sessions on these stripped fixtures.
 
 ### 002: Invalid initialization
 
 Both branches contain `moldea/moldea.yaml` and a non-empty `moldea/project.md`. The manifest deliberately declares `version: "1"` as a string. Repository Format v1 requires the integer `version: 1`, so the intended condition is present foundation files with invalid canonical configuration. Preserve that field type when working on this scenario.
+
+CLI `13.0.4` validation confirms the intended `MOLDEA_MANIFEST_VERSION_INVALID` error.
 
 Both branches print `Hello, world!`, point to the same commit, and contain the same invalid manifest and project foundation. Run either branch with `npm start`; no dependency installation is needed.
 
@@ -95,11 +102,15 @@ The intended comparison is `test/002-init-invalid/candidate` into `test/002-init
 
 ### 003: Release Brief
 
-Release Brief is a Node.js CLI using `openai@7.57.0` and the Responses API. Its Moldea foundation registers `note-summarizer` with runtime `openai` and binds `summarizeNote` in `/src/summary-agent.js` as its execution boundary.
+Release Brief is a Node.js CLI using `openai@7.57.0` and the Responses API. Its Moldea foundation registers `note-summarizer` with runtime `openai`, binds `summarizeNote` in `/src/summary-agent.js` as its execution boundary, and binds `loadInstruction` in `/src/instructions.js` as its instruction loader.
 
 Both branches request exactly one concise plain-text sentence, matching the canonical agent instruction and project foundation. They point to the same commit and contain no prepared instruction-code drift. The developer chooses candidate changes during Cloud and PR Assurance testing.
 
-Use Node.js 22 or newer and `npm ci`. The application's README documents `npm start -- "Release note"` and the SDK's standard environment configuration. It contains ordinary SDK code, with no fake transport, canned response implementation, or provisioned credentials. No API calls or automated tests were run during creation.
+Each invocation reads `/moldea/agents/note-summarizer/instruction.md` and passes its complete text into the Responses API's `instructions` field. The canonical instruction includes its required agent identity. CLI `13.0.4` with Core `9.2.1` reports zero errors, detects one `openai` agent, and passes both file and export checks for both bindings. `scope` maps each implementation path to `note-summarizer`.
+
+Use Node.js 22.17 or newer and `npm ci`. The application's README documents `npm start -- "Release note"`, the SDK's standard environment configuration, and `npm run moldea:validate` / `npm run moldea:inspect`. The CLI is pinned as a local development dependency. It contains ordinary SDK code, with no fake transport, canned response implementation, or provisioned credentials. No API calls or application test suites were run during creation; the instruction loader was invoked locally and its returned text inspected.
+
+All three scenarios currently report the unaccepted `MOLDEA_INTEGRATION_BLOCK_MISSING` warning because the managed AGENTS.md coding-agent skill integration is not installed. This warning remains visible; the SDK project's canonical structure is valid, and the first two scenarios retain only their intended structural errors.
 
 The intended comparison is `test/003-sdk-openai-simple/candidate` into `test/003-sdk-openai-simple/base`. Use the startup prompt above for fresh sessions; shared playground instructions and planning tooling are omitted from the application branches.
 
