@@ -4,7 +4,7 @@ Turn release notes into concise updates for product and engineering teams.
 
 ## Getting started
 
-Requires Node.js 22 or newer. Install dependencies with `npm ci`.
+Requires Node.js 22.17 or newer. Install dependencies with `npm ci`.
 
 The OpenAI SDK reads its credentials from `OPENAI_API_KEY` in the environment.
 
@@ -14,4 +14,9 @@ Run `npm start -- "Checkout latency dropped after adding a cache. Next, improve 
 
 - `src/index.js`: command-line input and output.
 - `src/summary-agent.js`: note summarization through the OpenAI Responses API.
+- `src/instructions.js`: loads the summarizer's canonical instruction for each request.
 - `moldea/`: project foundation and agent instructions.
+
+The runtime reads `moldea/agents/note-summarizer/instruction.md` for every summary and passes its contents as the Responses API's `instructions`. Changes to that file apply on the next invocation.
+
+Use `npm run moldea:validate` to validate project structure and `npm run moldea:inspect` to inspect agents and binding coverage.

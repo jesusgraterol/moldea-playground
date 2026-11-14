@@ -8,3 +8,6 @@ agents:
       runtimeAgent:
         path: /src/summary-agent.js
         symbol: summarizeNote
+      instructionLoader:
+        path: /src/instructions.js
+        symbol: loadInstruction
