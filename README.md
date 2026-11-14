@@ -71,12 +71,21 @@ The prefix identifies both branches using the suffixes above.
 | ID | Description | Branch prefix | Expected behavior | PR (optional) |
 | --- | --- | --- | --- | --- |
 | `001` | Missing Moldea initialization in a minimal Node.js project | `test/001-init-missing` | Both branches remain uninitialized; candidate adds an optional `--name` greeting. | — |
+| `002` | Invalid Moldea initialization in a minimal Node.js project | `test/002-init-invalid` | Foundation files exist, but the manifest version has the wrong type on both branches; candidate adds an optional `--name` greeting. | — |
 
 ### 001: Missing initialization
 
 Base prints `Hello, world!`. Candidate preserves that default and adds a `--name` option. Both contain only the package manifest, source, license, and ignore rules: no Moldea initialization, shared guidance, planning files, or external dependencies.
 
 Run either branch with `npm start`; candidate also supports `npm start -- --name Moldea`. No dependency installation is needed. The intended comparison is `test/001-init-missing/candidate` into `test/001-init-missing/base`, with initialization missing on both sides. Use the startup prompt above for fresh sessions on these stripped fixtures.
+
+### 002: Invalid initialization
+
+Both branches contain `moldea/moldea.yaml` and a non-empty `moldea/project.md`. The manifest deliberately declares `version: "1"` as a string. Repository Format v1 requires the integer `version: 1`, so the intended condition is present foundation files with invalid canonical configuration. Preserve that field type when working on this scenario.
+
+Base prints `Hello, world!`; candidate adds the same optional `--name` greeting as scenario `001`. Only `src/index.js` changes between base and candidate, leaving the invalid manifest and project foundation intact. Run either branch with `npm start`, or use `npm start -- --name Moldea` on candidate; no dependency installation is needed.
+
+The intended comparison is `test/002-init-invalid/candidate` into `test/002-init-invalid/base`. Shared guidance and planning tooling are omitted from these fixtures. Use the startup prompt above for fresh sessions.
 
 ## Planning
 
