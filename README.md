@@ -42,6 +42,9 @@ Once ready for comparison, keep base stable. Use a new scenario ID for a differe
 4. Start the scenario's base branch from `main`. Put the mock project at the repository root and use the stack, package manager, complexity, and artifacts requested for that scenario.
 5. Prepare and commit the starting fixture on base, then create candidate from that completed base. Add only the intended comparison changes to candidate.
 6. Record the purpose, intentional defects or omissions, and expected base/candidate behavior in the index on `main` or the PR description. Keep the index current when scenarios are created. Create a candidate-to-base PR when requested for PR Assurance; keep mock projects out of `main`.
+7. Before handing off a completed scenario, release its branches from the construction worktree. When that checkout is clean, run `git switch --detach` there to retain the current commit and files while making the candidate available in the original checkout. Keep the scenario branches and worktree; report dirty or unrelated work rather than changing it. The original checkout stays on the user's selected branch.
+
+Git permits a branch to be checked out in one worktree at a time. If the editor reports that a candidate is already checked out elsewhere, detach the clean construction checkout at its existing commit, then retry the branch switch in the original checkout.
 
 ### Fixture contents
 

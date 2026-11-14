@@ -15,6 +15,7 @@ This repository contains Moldea mocks. Read [README.md](README.md) for the branc
 
 - Keep naming and workflow definitions in the README rather than maintaining another copy here. Keep mock projects out of `main`.
 - Prefer a fresh workspace for each independent scenario. Inspect tracked, untracked, and ignored files before reusing a checkout; preserve existing files and use a fresh workspace if isolation is uncertain. Never automatically clean, delete, stash, or overwrite unrelated work.
+- Before handing off a completed scenario, detach its clean construction worktree at the current commit so its branches can be selected in the original checkout. Preserve the worktree, files, and scenario branches, and leave the user's original checkout on their selected branch. Report dirty or unrelated work instead of altering it.
 - Include only files appropriate to the fixture. Shared instructions and tooling may be omitted or replaced when required; keep intent and expected behavior in the main index or PR description.
 - Before creating scenarios, confirm canonical guidance is committed on local `main`. Report missing prerequisites rather than automatically committing unfinished setup.
 - For fresh sessions on fixtures with absent or replaced guidance, use the README's startup prompt to read `main:AGENTS.md` and `main:README.md` through `git show`. Include the prompt in handoffs outside the fixture. If guidance is unavailable, report it instead of adding files to the mock.
