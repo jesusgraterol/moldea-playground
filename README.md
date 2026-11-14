@@ -1,6 +1,6 @@
 # moldea-playground
 
-Mock projects for exploring Moldea initialization, SDK integrations, Navigator artifacts, and PR Assurance. Each scenario has its own base and candidate branches. Projects can be intentionally incomplete or incorrect.
+Mock projects for exploring Moldea initialization, SDK integrations, Navigator artifacts, and PR Assurance. Each scenario has its own base and candidate branches. Deliver correct, realistic projects; incomplete or incorrect conditions belong only to scenarios that explicitly request them.
 
 ## Guide
 
@@ -30,9 +30,9 @@ Naming examples; the scenario index below records which scenarios exist:
 | Simple OpenAI project | `test/003-sdk-openai-simple` |
 | All Navigator artifacts | `test/004-navigator-all-artifacts` |
 
-**Base is the starting state**, including intentional defects or missing initialization. Candidate begins at the completed base and adds the changes to evaluate. PR Assurance PRs go **from candidate into its matching base**.
+**Both branches start at the same commit with identical contents.** Base is the completed project for the requested scenario, including missing or invalid initialization only when explicitly requested. Candidate starts as an unchanged copy of that baseline. The developer decides which changes to make to candidate while testing Cloud or PR Assurance; do not prepare feature changes, regressions, instruction drift, or other differences in advance. PR Assurance PRs go **from candidate into its matching base** after the developer introduces changes.
 
-Once ready for comparison, keep base stable. Use a new scenario ID for a different baseline. Inspection-only pairs can initially share a commit; a PR comparison needs a deliberate difference. Preserve scenario branches independently of `main`.
+After delivery, keep base stable. Candidate remains identical until the developer changes it or explicitly asks for particular changes. Use a new scenario ID for a different baseline. Do not create an artificial difference merely to enable a PR comparison. Preserve scenario branches independently of `main`.
 
 ## Creating a scenario
 
@@ -40,8 +40,8 @@ Once ready for comparison, keep base stable. Use a new scenario ID for a differe
 2. Check the index and local and remote branches for an unused ID and prefix. Stop on a collision; do not replace existing branches.
 3. Prefer a fresh worktree or clone for each independent scenario, leaving the main checkout available for guidance and index updates. If reusing a checkout, first inspect tracked, untracked, and ignored files with `git status --short --untracked-files=all --ignored`. Ignored dependencies and generated output survive branch switches. If unrelated leftovers make isolation uncertain, use a fresh workspace. Preserve existing files; do not automatically clean, delete, stash, or overwrite them.
 4. Start the scenario's base branch from `main`. Put the mock project at the repository root and use the stack, package manager, complexity, and artifacts requested for that scenario.
-5. Prepare and commit the starting fixture on base, then create candidate from that completed base. Add only the intended comparison changes to candidate.
-6. Record the purpose, intentional defects or omissions, and expected base/candidate behavior in the index on `main` or the PR description. Keep the index current when scenarios are created. Create a candidate-to-base PR when requested for PR Assurance; keep mock projects out of `main`.
+5. Prepare and commit the complete project on base, then create candidate at that exact commit. Verify the branch tips match and their content diff is empty. Do not add candidate-only changes unless the developer explicitly requests them.
+6. Record the purpose, explicitly requested defects or omissions, and shared starting behavior in the index on `main`. Keep the index current when scenarios are created. Create a candidate-to-base PR only when requested after the developer has selected changes; keep mock projects out of `main`.
 7. Before handing off a completed scenario, release its branches from the construction worktree. When that checkout is clean, run `git switch --detach` there to retain the current commit and files while making the candidate available in the original checkout. Keep the scenario branches and worktree; report dirty or unrelated work rather than changing it. The original checkout stays on the user's selected branch.
 
 Git permits a branch to be checked out in one worktree at a time. If the editor reports that a candidate is already checked out elsewhere, detach the clean construction checkout at its existing commit, then retry the branch switch in the original checkout.
@@ -50,7 +50,7 @@ Git permits a branch to be checked out in one worktree at a time. If the editor 
 
 Include only files appropriate to the requested scenario. Shared documentation, agent instructions, planning files, and tooling manifests can be replaced or omitted on scenario branches when they affect detection or conflict with the mock. A scenario does not need a metadata file or template. Missing Moldea initialization still retains Git history for comparisons.
 
-Preserve deliberate mistakes. Fixture contents should look like normal applications: use realistic product names, ordinary SDK integrations, product documentation, and natural commit messages. Keep scenario labels, intentional-defect explanations, and PR Assurance expectations in descriptive branch names, the index on `main`, or PR descriptions. Do not name application files or components "mock", "dummy", or similar labels that disclose the exercise.
+Preserve explicitly requested invalid conditions; otherwise deliver a correct, coherent project. Fixture contents should look like normal applications: use realistic product names, ordinary SDK integrations, product documentation, and natural commit messages. Keep scenario labels, intentional-defect explanations, and PR Assurance expectations in descriptive branch names, the index on `main`, or PR descriptions. Do not name application files or components "mock", "dummy", or similar labels that disclose the exercise.
 
 Realistic sample inputs are fine. Use the SDK's normal integration code rather than adding fake endpoints, dummy-key client configuration, or canned response transports to make the application offline. Creating a fixture does not require configuring credentials or executing its API calls. Tests, CI, live API calls, secret infrastructure, and production hardening are unnecessary unless explicitly requested. For an all-artifacts scenario, establish Moldea's actual artifact contracts when creating it rather than assuming a fixed list here.
 
@@ -75,21 +75,21 @@ The prefix identifies both branches using the suffixes above.
 
 | ID | Description | Branch prefix | Expected behavior | PR (optional) |
 | --- | --- | --- | --- | --- |
-| `001` | Missing Moldea initialization in a minimal Node.js project | `test/001-init-missing` | Both branches remain uninitialized; candidate adds an optional `--name` greeting. | — |
-| `002` | Invalid Moldea initialization in a minimal Node.js project | `test/002-init-invalid` | Foundation files exist, but the manifest version has the wrong type on both branches; candidate adds an optional `--name` greeting. | — |
-| `003` | Release Brief: release-note summaries powered by the OpenAI SDK | `test/003-sdk-openai-simple` | Base follows the saved one-sentence rule; candidate requests three bullet points without updating canonical instructions. | — |
+| `001` | Missing Moldea initialization in a minimal Node.js project | `test/001-init-missing` | Identical branches with initialization intentionally absent. | — |
+| `002` | Invalid Moldea initialization in a minimal Node.js project | `test/002-init-invalid` | Identical branches with foundation files present and the manifest version deliberately using the wrong type. | — |
+| `003` | Release Brief: release-note summaries powered by the OpenAI SDK | `test/003-sdk-openai-simple` | Identical branches with the runtime prompt aligned to the saved one-sentence rule. | — |
 
 ### 001: Missing initialization
 
-Base prints `Hello, world!`. Candidate preserves that default and adds a `--name` option. Both contain only the package manifest, source, license, and ignore rules: no Moldea initialization, shared guidance, planning files, or external dependencies.
+Both branches print `Hello, world!` and point to the same commit. They contain only the package manifest, source, license, and ignore rules: no Moldea initialization, shared guidance, planning files, or external dependencies.
 
-Run either branch with `npm start`; candidate also supports `npm start -- --name Moldea`. No dependency installation is needed. The intended comparison is `test/001-init-missing/candidate` into `test/001-init-missing/base`, with initialization missing on both sides. Use the startup prompt above for fresh sessions on these stripped fixtures.
+Run either branch with `npm start`. No dependency installation is needed. The developer chooses later changes to `test/001-init-missing/candidate` and compares them against `test/001-init-missing/base`. Use the startup prompt above for fresh sessions on these stripped fixtures.
 
 ### 002: Invalid initialization
 
 Both branches contain `moldea/moldea.yaml` and a non-empty `moldea/project.md`. The manifest deliberately declares `version: "1"` as a string. Repository Format v1 requires the integer `version: 1`, so the intended condition is present foundation files with invalid canonical configuration. Preserve that field type when working on this scenario.
 
-Base prints `Hello, world!`; candidate adds the same optional `--name` greeting as scenario `001`. Only `src/index.js` changes between base and candidate, leaving the invalid manifest and project foundation intact. Run either branch with `npm start`, or use `npm start -- --name Moldea` on candidate; no dependency installation is needed.
+Both branches print `Hello, world!`, point to the same commit, and contain the same invalid manifest and project foundation. Run either branch with `npm start`; no dependency installation is needed.
 
 The intended comparison is `test/002-init-invalid/candidate` into `test/002-init-invalid/base`. Shared guidance and planning tooling are omitted from these fixtures. Use the startup prompt above for fresh sessions.
 
@@ -97,7 +97,7 @@ The intended comparison is `test/002-init-invalid/candidate` into `test/002-init
 
 Release Brief is a Node.js CLI using `openai@7.57.0` and the Responses API. Its Moldea foundation registers `note-summarizer` with runtime `openai` and binds `summarizeNote` in `/src/summary-agent.js` as its execution boundary.
 
-Base requests exactly one concise plain-text sentence, matching the canonical agent instruction. Candidate changes only the runtime prompt to request three Markdown bullet points; the saved instruction and project foundation retain the one-sentence rule. This intentional instruction-code drift is the PR Assurance focus and is documented only here, outside the application branches.
+Both branches request exactly one concise plain-text sentence, matching the canonical agent instruction and project foundation. They point to the same commit and contain no prepared instruction-code drift. The developer chooses candidate changes during Cloud and PR Assurance testing.
 
 Use Node.js 22 or newer and `npm ci`. The application's README documents `npm start -- "Release note"` and the SDK's standard environment configuration. It contains ordinary SDK code, with no fake transport, canned response implementation, or provisioned credentials. No API calls or automated tests were run during creation.
 
