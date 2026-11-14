@@ -47,7 +47,9 @@ Once ready for comparison, keep base stable. Use a new scenario ID for a differe
 
 Include only files appropriate to the requested scenario. Shared documentation, agent instructions, planning files, and tooling manifests can be replaced or omitted on scenario branches when they affect detection or conflict with the mock. A scenario does not need a metadata file or template. Missing Moldea initialization still retains Git history for comparisons.
 
-Preserve deliberate mistakes. Use canned data or dummy values when sufficient. Tests, CI, live API calls, secret infrastructure, and production hardening are unnecessary unless explicitly requested. For an all-artifacts scenario, establish Moldea's actual artifact contracts when creating it rather than assuming a fixed list here.
+Preserve deliberate mistakes. Fixture contents should look like normal applications: use realistic product names, ordinary SDK integrations, product documentation, and natural commit messages. Keep scenario labels, intentional-defect explanations, and PR Assurance expectations in descriptive branch names, the index on `main`, or PR descriptions. Do not name application files or components "mock", "dummy", or similar labels that disclose the exercise.
+
+Realistic sample inputs are fine. Use the SDK's normal integration code rather than adding fake endpoints, dummy-key client configuration, or canned response transports to make the application offline. Creating a fixture does not require configuring credentials or executing its API calls. Tests, CI, live API calls, secret infrastructure, and production hardening are unnecessary unless explicitly requested. For an all-artifacts scenario, establish Moldea's actual artifact contracts when creating it rather than assuming a fixed list here.
 
 ### Starting a session on a fixture branch
 
@@ -72,6 +74,7 @@ The prefix identifies both branches using the suffixes above.
 | --- | --- | --- | --- | --- |
 | `001` | Missing Moldea initialization in a minimal Node.js project | `test/001-init-missing` | Both branches remain uninitialized; candidate adds an optional `--name` greeting. | — |
 | `002` | Invalid Moldea initialization in a minimal Node.js project | `test/002-init-invalid` | Foundation files exist, but the manifest version has the wrong type on both branches; candidate adds an optional `--name` greeting. | — |
+| `003` | Release Brief: release-note summaries powered by the OpenAI SDK | `test/003-sdk-openai-simple` | Base follows the saved one-sentence rule; candidate requests three bullet points without updating canonical instructions. | — |
 
 ### 001: Missing initialization
 
@@ -86,6 +89,16 @@ Both branches contain `moldea/moldea.yaml` and a non-empty `moldea/project.md`. 
 Base prints `Hello, world!`; candidate adds the same optional `--name` greeting as scenario `001`. Only `src/index.js` changes between base and candidate, leaving the invalid manifest and project foundation intact. Run either branch with `npm start`, or use `npm start -- --name Moldea` on candidate; no dependency installation is needed.
 
 The intended comparison is `test/002-init-invalid/candidate` into `test/002-init-invalid/base`. Shared guidance and planning tooling are omitted from these fixtures. Use the startup prompt above for fresh sessions.
+
+### 003: Release Brief
+
+Release Brief is a Node.js CLI using `openai@7.57.0` and the Responses API. Its Moldea foundation registers `note-summarizer` with runtime `openai` and binds `summarizeNote` in `/src/summary-agent.js` as its execution boundary.
+
+Base requests exactly one concise plain-text sentence, matching the canonical agent instruction. Candidate changes only the runtime prompt to request three Markdown bullet points; the saved instruction and project foundation retain the one-sentence rule. This intentional instruction-code drift is the PR Assurance focus and is documented only here, outside the application branches.
+
+Use Node.js 22 or newer and `npm ci`. The application's README documents `npm start -- "Release note"` and the SDK's standard environment configuration. It contains ordinary SDK code, with no fake transport, canned response implementation, or provisioned credentials. No API calls or automated tests were run during creation.
+
+The intended comparison is `test/003-sdk-openai-simple/candidate` into `test/003-sdk-openai-simple/base`. Use the startup prompt above for fresh sessions; shared playground instructions and planning tooling are omitted from the application branches.
 
 ## Planning
 

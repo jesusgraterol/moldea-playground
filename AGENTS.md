@@ -5,8 +5,10 @@ This repository contains Moldea mocks. Read [README.md](README.md) for the branc
 ## Mock scope
 
 - Build only enough to demonstrate the requested Moldea behavior. Choose the stack and artifacts for that scenario; explicit user requirements override repository defaults.
+- Make fixture-facing product names, files, documentation, and commit messages look like a normal application. Keep scenario labels and intentional-defect explanations in branch names, the main index, or PR descriptions. Do not label application components "mock", "dummy", or similar terms that could influence PR Assurance.
 - Missing initialization, malformed configuration, incomplete artifacts, and other defects can be intentional. Preserve them unless the request specifically changes them.
-- Use canned data and dummy values when sufficient. Do not add or run automated tests, CI, live API calls, secret infrastructure, or production hardening unless requested.
+- Use ordinary SDK integration code and realistic sample inputs. Do not add fake endpoints, dummy-key client setup, or canned response transports merely to avoid configuring credentials. Credentials do not need to be provisioned and API calls do not need to be executed while creating the fixture.
+- Do not add or run automated tests, CI, live API calls, secret infrastructure, or production hardening unless requested.
 - Do not apply production conventions that defeat the mock. Do not invent Moldea's artifact contracts; establish the relevant contracts when the scenario requires them.
 
 ## Scenario handling
