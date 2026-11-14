@@ -1,6 +1,9 @@
 {
+  "name": "moldea-init-invalid",
+  "version": "0.0.0",
   "private": true,
-  "devDependencies": {
-    "jg-plans": "0.6.1"
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
   }
 }
