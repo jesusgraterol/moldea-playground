@@ -1,0 +1,37 @@
+[
+  {
+    "id": "delivery-tracking",
+    "title": "Understanding delivery updates",
+    "keywords": [
+      "tracking",
+      "delivery",
+      "late",
+      "shipment",
+      "order"
+    ],
+    "body": "Use the order record's carrier and tracking number to locate a shipment. An estimated delivery date is a forecast. A representative can investigate an overdue shipment; the support assistant cannot contact the carrier."
+  },
+  {
+    "id": "return-request",
+    "title": "Preparing a return request",
+    "keywords": [
+      "return",
+      "refund",
+      "shirt",
+      "size",
+      "exchange"
+    ],
+    "body": "Confirm the order and item, then consult the supplied return policy. Ask the customer about condition and tags before recommending a standard return request. A representative handles authorization and exceptions."
+  },
+  {
+    "id": "account-orders",
+    "title": "Finding the right purchase",
+    "keywords": [
+      "account",
+      "purchase",
+      "order",
+      "receipt"
+    ],
+    "body": "A representative can locate purchases in the customer's account. If several orders could match the question, ask which order or item the customer means."
+  }
+]

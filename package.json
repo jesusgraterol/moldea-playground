@@ -1,6 +1,22 @@
 {
+  "name": "harbor-desk",
+  "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "description": "Customer support drafting with specialist handoffs and a final editorial review.",
+  "engines": {
+    "node": ">=22.17.0"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "moldea:validate": "moldea validate --json",
+    "moldea:inspect": "moldea inspect --json"
+  },
+  "dependencies": {
+    "@openai/agents": "0.22.0",
+    "zod": "4.6.7"
+  },
   "devDependencies": {
-    "jg-plans": "0.6.1"
+    "@moldea.ai/cli": "13.0.4"
   }
 }

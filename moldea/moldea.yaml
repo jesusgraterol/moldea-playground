@@ -1,0 +1,303 @@
+version: 1
+context:
+  /moldea/context/support-policy.md:
+    bindings:
+      - path: /src/workflow.js
+        symbol: runSupportWorkflow
+    affectedBy:
+      - /src/schemas.js
+  /moldea/context/customer-data.md:
+    bindings:
+      - path: /src/catalog.js
+        symbol: findCustomerOrder
+    affectedBy:
+      - /src/tools/account.js
+      - /src/workflow.js
+      - /src/instructions.js
+  /moldea/context/order-operations.md:
+    affectedBy:
+      - /src/tools/account.js
+      - /data/orders.json
+  /moldea/context/returns-policy.md:
+    affectedBy:
+      - /src/instructions.js
+      - /src/tools/account.js
+      - /data/orders.json
+decisions:
+  /moldea/decisions/1794692368000-specialist-handoffs-and-review.md:
+    bindings:
+      - path: /src/workflow.js
+        symbol: runSupportWorkflow
+    affectedBy:
+      - /src/agents/concierge.js
+  /moldea/decisions/1794692368001-read-only-account-tools.md:
+    bindings:
+      - path: /src/catalog.js
+        symbol: findCustomerOrder
+    affectedBy:
+      - /src/tools/account.js
+      - /src/tools/help.js
+agents:
+  support-concierge:
+    runtime:
+      id: openai-agents-sdk
+      guidance: /moldea/runtimes/openai-agents.md
+    context:
+      - /moldea/context/support-policy.md
+      - /moldea/context/customer-data.md
+    decisions:
+      - /moldea/decisions/1794692368000-specialist-handoffs-and-review.md
+      - /moldea/decisions/1794692368001-read-only-account-tools.md
+    bindings:
+      runtimeAgent:
+        path: /src/agents/concierge.js
+        symbol: createConciergeAgent
+      instructionLoader:
+        path: /src/instructions.js
+        symbol: loadConciergeInstruction
+      outputSchema:
+        path: /src/schemas.js
+        symbol: SupportReplySchema
+    tools:
+      lookup-customer:
+        name: lookup_customer
+        description: Read the current customer name and membership from the account catalog.
+        implementation:
+          path: /src/tools/account.js
+          symbol: executeLookupCustomer
+        registration:
+          path: /src/tools/account.js
+          symbol: lookupCustomerTool
+        inputSchema:
+          path: /src/schemas.js
+          symbol: EmptyParametersSchema
+        affectedBy:
+          - /src/catalog.js
+          - /data/customers.json
+      search-help-articles:
+        name: search_help_articles
+        description: Search help articles for delivery, return, and account support procedures.
+        implementation:
+          path: /src/tools/help.js
+          symbol: executeSearchHelpArticles
+        registration:
+          path: /src/tools/help.js
+          symbol: searchHelpArticlesTool
+        inputSchema:
+          path: /src/schemas.js
+          symbol: ArticleSearchSchema
+        affectedBy:
+          - /src/catalog.js
+          - /data/help-articles.json
+    affectedBy:
+      - /src/workflow.js
+      - /src/agents/order-specialist.js
+      - /src/agents/returns-specialist.js
+  order-specialist:
+    runtime:
+      id: openai-agents-sdk
+      guidance: /moldea/runtimes/openai-agents.md
+    context:
+      - /moldea/context/support-policy.md
+      - /moldea/context/customer-data.md
+      - /moldea/context/order-operations.md
+    decisions:
+      - /moldea/decisions/1794692368000-specialist-handoffs-and-review.md
+      - /moldea/decisions/1794692368001-read-only-account-tools.md
+    bindings:
+      runtimeAgent:
+        path: /src/agents/order-specialist.js
+        symbol: createOrderSpecialistAgent
+      instructionLoader:
+        path: /src/instructions.js
+        symbol: loadOrderInstruction
+      outputSchema:
+        path: /src/schemas.js
+        symbol: SupportReplySchema
+    tools:
+      lookup-customer:
+        name: lookup_customer
+        description: Read the current customer name and membership from the account catalog.
+        implementation:
+          path: /src/tools/account.js
+          symbol: executeLookupCustomer
+        registration:
+          path: /src/tools/account.js
+          symbol: lookupCustomerTool
+        inputSchema:
+          path: /src/schemas.js
+          symbol: EmptyParametersSchema
+        affectedBy:
+          - /src/catalog.js
+          - /data/customers.json
+      list-customer-orders:
+        name: list_customer_orders
+        description: List orders owned by the current customer to identify the relevant purchase.
+        implementation:
+          path: /src/tools/account.js
+          symbol: executeListCustomerOrders
+        registration:
+          path: /src/tools/account.js
+          symbol: listCustomerOrdersTool
+        inputSchema:
+          path: /src/schemas.js
+          symbol: EmptyParametersSchema
+        affectedBy:
+          - /src/catalog.js
+          - /data/orders.json
+      get-order:
+        name: get_order
+        description: Read status, delivery dates, tracking, and item details for an order in the current account.
+        implementation:
+          path: /src/tools/account.js
+          symbol: executeGetOrder
+        registration:
+          path: /src/tools/account.js
+          symbol: getOrderTool
+        inputSchema:
+          path: /src/schemas.js
+          symbol: OrderLookupSchema
+        affectedBy:
+          - /src/catalog.js
+          - /data/orders.json
+    affectedBy:
+      - /src/workflow.js
+  returns-specialist:
+    runtime:
+      id: openai-agents-sdk
+      guidance: /moldea/runtimes/openai-agents.md
+    context:
+      - /moldea/context/support-policy.md
+      - /moldea/context/customer-data.md
+      - /moldea/context/returns-policy.md
+    decisions:
+      - /moldea/decisions/1794692368000-specialist-handoffs-and-review.md
+      - /moldea/decisions/1794692368001-read-only-account-tools.md
+    bindings:
+      runtimeAgent:
+        path: /src/agents/returns-specialist.js
+        symbol: createReturnsSpecialistAgent
+      instructionLoader:
+        path: /src/instructions.js
+        symbol: loadReturnsInstruction
+      outputSchema:
+        path: /src/schemas.js
+        symbol: SupportReplySchema
+    tools:
+      get-order:
+        name: get_order
+        description: Read status, delivery dates, tracking, and item details for an order in the current account.
+        implementation:
+          path: /src/tools/account.js
+          symbol: executeGetOrder
+        registration:
+          path: /src/tools/account.js
+          symbol: getOrderTool
+        inputSchema:
+          path: /src/schemas.js
+          symbol: OrderLookupSchema
+        affectedBy:
+          - /src/catalog.js
+          - /data/orders.json
+      search-help-articles:
+        name: search_help_articles
+        description: Search help articles for delivery, return, and account support procedures.
+        implementation:
+          path: /src/tools/help.js
+          symbol: executeSearchHelpArticles
+        registration:
+          path: /src/tools/help.js
+          symbol: searchHelpArticlesTool
+        inputSchema:
+          path: /src/schemas.js
+          symbol: ArticleSearchSchema
+        affectedBy:
+          - /src/catalog.js
+          - /data/help-articles.json
+    affectedBy:
+      - /src/workflow.js
+  reply-reviewer:
+    runtime:
+      id: openai-agents-sdk
+      guidance: /moldea/runtimes/openai-agents.md
+    context:
+      - /moldea/context/support-policy.md
+      - /moldea/context/customer-data.md
+      - /moldea/context/order-operations.md
+      - /moldea/context/returns-policy.md
+    decisions:
+      - /moldea/decisions/1794692368000-specialist-handoffs-and-review.md
+      - /moldea/decisions/1794692368001-read-only-account-tools.md
+    bindings:
+      runtimeAgent:
+        path: /src/agents/reply-reviewer.js
+        symbol: createReplyReviewerAgent
+      instructionLoader:
+        path: /src/instructions.js
+        symbol: loadReviewerInstruction
+      outputSchema:
+        path: /src/schemas.js
+        symbol: SupportReplySchema
+    tools:
+      lookup-customer:
+        name: lookup_customer
+        description: Read the current customer name and membership from the account catalog.
+        implementation:
+          path: /src/tools/account.js
+          symbol: executeLookupCustomer
+        registration:
+          path: /src/tools/account.js
+          symbol: lookupCustomerTool
+        inputSchema:
+          path: /src/schemas.js
+          symbol: EmptyParametersSchema
+        affectedBy:
+          - /src/catalog.js
+          - /data/customers.json
+      list-customer-orders:
+        name: list_customer_orders
+        description: List orders owned by the current customer to identify the relevant purchase.
+        implementation:
+          path: /src/tools/account.js
+          symbol: executeListCustomerOrders
+        registration:
+          path: /src/tools/account.js
+          symbol: listCustomerOrdersTool
+        inputSchema:
+          path: /src/schemas.js
+          symbol: EmptyParametersSchema
+        affectedBy:
+          - /src/catalog.js
+          - /data/orders.json
+      get-order:
+        name: get_order
+        description: Read status, delivery dates, tracking, and item details for an order in the current account.
+        implementation:
+          path: /src/tools/account.js
+          symbol: executeGetOrder
+        registration:
+          path: /src/tools/account.js
+          symbol: getOrderTool
+        inputSchema:
+          path: /src/schemas.js
+          symbol: OrderLookupSchema
+        affectedBy:
+          - /src/catalog.js
+          - /data/orders.json
+      search-help-articles:
+        name: search_help_articles
+        description: Search help articles for delivery, return, and account support procedures.
+        implementation:
+          path: /src/tools/help.js
+          symbol: executeSearchHelpArticles
+        registration:
+          path: /src/tools/help.js
+          symbol: searchHelpArticlesTool
+        inputSchema:
+          path: /src/schemas.js
+          symbol: ArticleSearchSchema
+        affectedBy:
+          - /src/catalog.js
+          - /data/help-articles.json
+    affectedBy:
+      - /src/workflow.js

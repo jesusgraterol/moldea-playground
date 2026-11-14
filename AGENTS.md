@@ -1,31 +1,15 @@
-# Agent instructions
+<!-- moldea:start -->
 
-This repository contains Moldea mocks. Read [README.md](README.md) for the branch convention, scenario workflow, index, and session startup prompt, and [docs/delivery.md](docs/delivery.md) for delivery.
+Consuming an invoked skill's entrypoint and supporting instructions is host instruction loading, not itself a moldea trigger or a project path for this precheck. Independently targeted project inputs, outputs, and implementation paths retain the routing below. Creating or changing a skill's behavior is actual skill work.
 
-## Mock scope
+When installed in this repository, moldea provides project context. Explicit moldea operations, planning, creating, reviewing, or changing agents or skills, changes to what an in-app model decides or says (including inline calls), and project-context work use only the exact <repo-root>/.agents/skills/moldea/SKILL.md. If it is missing, continue without moldea and without searching for another copy, installing, or initializing; for an explicit moldea operation, report the unavailable installation. Otherwise, first read it unless its complete unchanged instructions are available, then follow its routing before repository checks. For other repository planning, implementation, or review, once you know the involved files, check only the exact files <repo-root>/.agents/skills/moldea/SKILL.md and <repo-root>/.agents/skills/moldea/scripts/relevance-gate.mjs. If either is missing, skip this section silently without searching for another copy, installing, or initializing moldea. Otherwise, before editing or giving conclusions, run:
 
-- Deliver a correct, realistic project for the requested Moldea scenario. Choose its stack and artifacts from the request; explicit user requirements override repository defaults.
-- Make fixture-facing product names, files, documentation, and commit messages look like a normal application. Keep scenario labels and intentional-defect explanations in branch names, the main index, or PR descriptions. Do not label application components "mock", "dummy", or similar terms that could influence PR Assurance.
-- Missing initialization, malformed configuration, incomplete artifacts, and other defects belong only to scenarios that explicitly request them. Preserve those requested conditions on both branches; do not invent additional defects or instruction drift.
-- Use ordinary SDK integration code and realistic sample inputs. Do not add fake endpoints, dummy-key client setup, or canned response transports merely to avoid configuring credentials. Credentials do not need to be provisioned and API calls do not need to be executed while creating the fixture.
-- Canonical agent instructions must supply the real SDK request. Load the instruction file at invocation time, declare the actual instruction-loader binding, and trace the loaded text into the SDK instruction field. Do not substitute a hard-coded copy of the prompt.
-- Do not add or run automated tests, CI, live API calls, secret infrastructure, or production hardening unless requested.
-- Do not apply production conventions that defeat the mock. Do not invent Moldea's artifact contracts; establish the relevant contracts when the scenario requires them.
+node "<repo-root>/.agents/skills/moldea/scripts/relevance-gate.mjs" --repository "<repo-root>" --path "<file>" [--path "<file>" ...]
 
-## Scenario handling
+<repo-root> is the absolute repository root. Pass file paths relative to that root, even from a subdirectory. Use only already-known paths; do not scan or run Git for this. With no known paths, skip this precheck.
 
-- Keep naming and workflow definitions in the README rather than maintaining another copy here. Keep mock projects out of `main`.
-- Deliver base and candidate at the exact same commit with identical contents. The developer decides later candidate changes for Cloud and PR Assurance. Do not prepare feature changes, regressions, or alignment issues unless explicitly requested. Verify matching tips and an empty branch diff before handoff.
-- Prefer a fresh workspace for each independent scenario. Inspect tracked, untracked, and ignored files before reusing a checkout; preserve existing files and use a fresh workspace if isolation is uncertain. Never automatically clean, delete, stash, or overwrite unrelated work.
-- Before handing off a completed scenario, detach its clean construction worktree at the current commit so its branches can be selected in the original checkout. Preserve the worktree, files, and scenario branches, and leave the user's original checkout on their selected branch. Report dirty or unrelated work instead of altering it.
-- Include only files appropriate to the fixture. Shared instructions and tooling may be omitted or replaced when required; keep intent and expected behavior in the main index or PR description.
-- Before creating scenarios, confirm canonical guidance is committed on local `main`. Report missing prerequisites rather than automatically committing unfinished setup.
-- For fresh sessions on fixtures with absent or replaced guidance, use the README's startup prompt to read `main:AGENTS.md` and `main:README.md` through `git show`. Include the prompt in handoffs outside the fixture. If guidance is unavailable, report it instead of adding files to the mock.
+- Output 1: read <repo-root>/.agents/skills/moldea/SKILL.md unless its complete unchanged instructions are already available; retain the checked paths and result.
+- Output 0 or an error: continue without moldea and do not mention it.
 
-## Checks and delivery
-
-For documentation or setup changes, perform the checks relevant to the changed files and selected plan. Do not create fixtures or automated tests solely to verify repository guidance. Follow the delivery procedure and the current invocation's authorization for commits, pushes, or PRs.
-
-For initialized scenarios, use the released, repository-local Moldea skill's full initialization workflow. Include its tracked installation and lockfile, the compatible local CLI, grounded canonical state and existing-agent onboarding, and bundled-writer-generated README and AGENTS.md integration. A CLI result with zero structural errors is not sufficient when setup components or unintended integration warnings remain.
-
-Before delivery, retain the workflow's inventory and file/export coverage for every declared binding, trace actual instruction consumption, and finish with launcher-backed validation after all writes. Use inspection and scope where the selected operation requires them; do not add unnecessary commands after final validation. Preserve explicitly requested invalid conditions and verify their expected diagnostics. Report remaining warnings without inventing acceptance. These checks are required even though application test suites and live API calls are not.
+If the task involves new files later, check only that new batch once before acting. Reuse unchanged results.
+<!-- moldea:end -->

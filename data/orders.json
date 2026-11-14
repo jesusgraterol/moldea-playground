@@ -1,0 +1,62 @@
+[
+  {
+    "id": "HD-10483",
+    "customerId": "cus_1042",
+    "placedAt": "2026-11-04",
+    "status": "delivered",
+    "deliveredAt": "2026-11-09",
+    "estimatedDelivery": null,
+    "carrier": "UPS",
+    "trackingNumber": "1Z7A82R20311940825",
+    "items": [
+      {
+        "sku": "SH-LN-204-M",
+        "name": "Coastal Linen Shirt",
+        "quantity": 1,
+        "finalSale": false
+      },
+      {
+        "sku": "CP-CV-108",
+        "name": "Canvas Cap",
+        "quantity": 1,
+        "finalSale": true
+      }
+    ]
+  },
+  {
+    "id": "HD-10411",
+    "customerId": "cus_1042",
+    "placedAt": "2026-09-18",
+    "status": "delivered",
+    "deliveredAt": "2026-09-24",
+    "estimatedDelivery": null,
+    "carrier": "UPS",
+    "trackingNumber": "1Z7A82R20311267490",
+    "items": [
+      {
+        "sku": "BG-WK-302",
+        "name": "Weekender Bag",
+        "quantity": 1,
+        "finalSale": false
+      }
+    ]
+  },
+  {
+    "id": "HD-10502",
+    "customerId": "cus_1087",
+    "placedAt": "2026-11-11",
+    "status": "shipped",
+    "deliveredAt": null,
+    "estimatedDelivery": "2026-11-17",
+    "carrier": "FedEx",
+    "trackingNumber": "784619523810",
+    "items": [
+      {
+        "sku": "JK-RN-410-L",
+        "name": "Harbor Rain Jacket",
+        "quantity": 1,
+        "finalSale": false
+      }
+    ]
+  }
+]
