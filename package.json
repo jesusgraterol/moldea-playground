@@ -1,6 +1,15 @@
 {
+  "name": "release-brief",
+  "version": "0.1.0",
   "private": true,
-  "devDependencies": {
-    "jg-plans": "0.6.1"
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "openai": "7.57.0"
   }
 }
