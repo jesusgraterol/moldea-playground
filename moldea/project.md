@@ -5,3 +5,7 @@ Release Brief turns release notes into concise updates for product and engineeri
 The note-summarizer returns exactly one concise sentence of plain text, preserving the supplied note's main outcome and next step without adding facts.
 
 The CLI accepts a release note as input and prints the summary to standard output. Notes and summaries are not persisted by the application, and response storage is disabled in the API request.
+
+## Agent
+
+The [note summarizer](agents/note-summarizer/description.md) owns release-note summarization. Its [canonical instruction](agents/note-summarizer/instruction.md) defines the response behavior and is loaded by the application for every request.
