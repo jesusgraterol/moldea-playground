@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "devDependencies": {
+    "jg-plans": "0.6.1"
+  }
+}
