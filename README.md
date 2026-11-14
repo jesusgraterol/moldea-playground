@@ -21,7 +21,7 @@ test/<NNN>-<descriptive-slug>/candidate
 
 Use a unique three-digit ID starting at `001`; never reuse an ID. Choose a lowercase kebab-case slug that describes the behavior, adding the SDK or complexity when useful. Categories are flexible.
 
-Examples only; these scenarios have not been created:
+Naming examples; the scenario index below records which scenarios exist:
 
 | Scenario | Branch prefix (append `/base` or `/candidate`) |
 | --- | --- |
@@ -66,10 +66,17 @@ This requires the guidance to be committed on local `main`. Supply the prompt ou
 
 ## Scenario index
 
-No scenarios have been created yet. The prefix identifies both branches using the suffixes above.
+The prefix identifies both branches using the suffixes above.
 
 | ID | Description | Branch prefix | Expected behavior | PR (optional) |
 | --- | --- | --- | --- | --- |
+| `001` | Missing Moldea initialization in a minimal Node.js project | `test/001-init-missing` | Both branches remain uninitialized; candidate adds an optional `--name` greeting. | — |
+
+### 001: Missing initialization
+
+Base prints `Hello, world!`. Candidate preserves that default and adds a `--name` option. Both contain only the package manifest, source, license, and ignore rules: no Moldea initialization, shared guidance, planning files, or external dependencies.
+
+Run either branch with `npm start`; candidate also supports `npm start -- --name Moldea`. No dependency installation is needed. The intended comparison is `test/001-init-missing/candidate` into `test/001-init-missing/base`, with initialization missing on both sides. Use the startup prompt above for fresh sessions on these stripped fixtures.
 
 ## Planning
 
