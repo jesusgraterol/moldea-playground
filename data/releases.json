@@ -1,0 +1,293 @@
+[
+  {
+    "id": "atlas-2-8",
+    "title": "Atlas 2.8 — shared dashboards",
+    "owner": "Mina Patel",
+    "targetDate": "2026-11-23",
+    "audience": "Workspace administrators and dashboard editors",
+    "services": [
+      "atlas-web",
+      "atlas-api",
+      "workspace-permissions"
+    ],
+    "changes": [
+      {
+        "id": "AT-842",
+        "title": "Share dashboards with workspace groups",
+        "service": "atlas-api",
+        "kind": "feature",
+        "customerImpact": "Administrators can grant dashboard access to an existing workspace group.",
+        "evidenceIds": [
+          "EV-281"
+        ]
+      },
+      {
+        "id": "AT-851",
+        "title": "Preserve saved filter selection on shared links",
+        "service": "atlas-web",
+        "kind": "fix",
+        "customerImpact": "Shared dashboard links keep their saved filter selection.",
+        "evidenceIds": [
+          "EV-282"
+        ]
+      }
+    ],
+    "checks": [
+      {
+        "id": "CHK-281",
+        "title": "Release validation",
+        "owner": "Nora Chen",
+        "required": true,
+        "status": "passed",
+        "evidenceIds": [
+          "EV-281",
+          "EV-282"
+        ]
+      },
+      {
+        "id": "CHK-282",
+        "title": "Support handover",
+        "owner": "Owen Ellis",
+        "required": true,
+        "status": "passed",
+        "evidenceIds": [
+          "EV-283"
+        ]
+      },
+      {
+        "id": "CHK-283",
+        "title": "Capacity review",
+        "owner": "Imani Cole",
+        "required": true,
+        "status": "pending",
+        "evidenceIds": [
+          "EV-284"
+        ]
+      }
+    ],
+    "dependencies": [
+      {
+        "id": "DEP-281",
+        "service": "workspace-permissions",
+        "owner": "Rafael Costa",
+        "status": "ready",
+        "note": "Group membership lookup is available in the target environment.",
+        "evidenceIds": [
+          "EV-285"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "EV-281",
+        "kind": "validation",
+        "status": "passed",
+        "recordedAt": "2026-11-17T14:20:00.000Z",
+        "summary": "Group access validation passed across administrator, editor, and viewer roles."
+      },
+      {
+        "id": "EV-282",
+        "kind": "validation",
+        "status": "passed",
+        "recordedAt": "2026-11-17T16:05:00.000Z",
+        "summary": "Shared-link filter navigation validation passed for saved and unsaved filters."
+      },
+      {
+        "id": "EV-283",
+        "kind": "runbook",
+        "status": "passed",
+        "recordedAt": "2026-11-18T09:30:00.000Z",
+        "summary": "Support handover includes group-access troubleshooting and escalation ownership."
+      },
+      {
+        "id": "EV-284",
+        "kind": "review",
+        "status": "pending",
+        "recordedAt": "2026-11-18T10:00:00.000Z",
+        "summary": "Capacity review awaits the revised dashboard fan-out estimate from Atlas API."
+      },
+      {
+        "id": "EV-285",
+        "kind": "review",
+        "status": "passed",
+        "recordedAt": "2026-11-17T11:40:00.000Z",
+        "summary": "Permissions owner confirmed group lookup readiness for the release window."
+      }
+    ],
+    "rollout": {
+      "strategy": "Enable group sharing for internal workspaces, then 10%, 50%, and all workspaces after each observation window.",
+      "rollback": "Disable dashboard_group_sharing. Existing direct-user permissions remain available.",
+      "monitoringOwner": "Imani Cole"
+    }
+  },
+  {
+    "id": "atlas-2-7-3",
+    "title": "Atlas 2.7.3 — export reliability",
+    "owner": "Mina Patel",
+    "targetDate": "2026-11-20",
+    "audience": "Dashboard owners exporting larger reports",
+    "services": [
+      "atlas-api",
+      "export-worker"
+    ],
+    "changes": [
+      {
+        "id": "AT-833",
+        "title": "Resume interrupted CSV export uploads",
+        "service": "export-worker",
+        "kind": "fix",
+        "customerImpact": "Interrupted uploads resume from their last completed chunk.",
+        "evidenceIds": [
+          "EV-273"
+        ]
+      }
+    ],
+    "checks": [
+      {
+        "id": "CHK-273",
+        "title": "Export validation",
+        "owner": "Nora Chen",
+        "required": true,
+        "status": "passed",
+        "evidenceIds": [
+          "EV-273"
+        ]
+      },
+      {
+        "id": "CHK-274",
+        "title": "Rollback and monitoring handover",
+        "owner": "Imani Cole",
+        "required": true,
+        "status": "passed",
+        "evidenceIds": [
+          "EV-274"
+        ]
+      }
+    ],
+    "dependencies": [
+      {
+        "id": "DEP-273",
+        "service": "export-worker",
+        "owner": "Leah Brooks",
+        "status": "ready",
+        "note": "The current worker release accepts resumable upload checkpoints.",
+        "evidenceIds": [
+          "EV-275"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "EV-273",
+        "kind": "validation",
+        "status": "passed",
+        "recordedAt": "2026-11-17T12:10:00.000Z",
+        "summary": "Large export interruption and retry validation passed without duplicate output rows."
+      },
+      {
+        "id": "EV-274",
+        "kind": "runbook",
+        "status": "passed",
+        "recordedAt": "2026-11-17T15:00:00.000Z",
+        "summary": "Export queue depth, upload failures, rollback flag, and on-call ownership documented."
+      },
+      {
+        "id": "EV-275",
+        "kind": "review",
+        "status": "passed",
+        "recordedAt": "2026-11-18T08:50:00.000Z",
+        "summary": "Worker owner confirmed checkpoint format compatibility."
+      }
+    ],
+    "rollout": {
+      "strategy": "Enable resumable uploads for 10% of export jobs, then expand after queue and failure-rate observation.",
+      "rollback": "Disable resumable_export_uploads and let queued jobs use the existing complete-upload path.",
+      "monitoringOwner": "Imani Cole"
+    }
+  },
+  {
+    "id": "meridian-1-6",
+    "title": "Meridian 1.6 — notification preferences",
+    "owner": "Ethan Reed",
+    "targetDate": "2026-11-25",
+    "audience": "Workspace members managing digest notifications",
+    "services": [
+      "meridian-api",
+      "notification-worker"
+    ],
+    "changes": [
+      {
+        "id": "ME-416",
+        "title": "Migrate member digest preferences",
+        "service": "meridian-api",
+        "kind": "migration",
+        "customerImpact": "Members can manage digest frequency separately for each workspace.",
+        "evidenceIds": [
+          "EV-161"
+        ]
+      }
+    ],
+    "checks": [
+      {
+        "id": "CHK-161",
+        "title": "Preference migration validation",
+        "owner": "Sofia Alvarez",
+        "required": true,
+        "status": "failed",
+        "evidenceIds": [
+          "EV-161"
+        ]
+      },
+      {
+        "id": "CHK-162",
+        "title": "Support documentation",
+        "owner": "Owen Ellis",
+        "required": false,
+        "status": "passed",
+        "evidenceIds": [
+          "EV-162"
+        ]
+      }
+    ],
+    "dependencies": [
+      {
+        "id": "DEP-161",
+        "service": "notification-worker",
+        "owner": "Leah Brooks",
+        "status": "pending",
+        "note": "Worker compatibility review is waiting for the corrected migration behavior.",
+        "evidenceIds": [
+          "EV-163"
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "id": "EV-161",
+        "kind": "validation",
+        "status": "failed",
+        "recordedAt": "2026-11-18T11:15:00.000Z",
+        "summary": "Migration validation found weekly digest preferences reset for members in multiple workspaces."
+      },
+      {
+        "id": "EV-162",
+        "kind": "runbook",
+        "status": "passed",
+        "recordedAt": "2026-11-17T16:30:00.000Z",
+        "summary": "Preference settings documentation is ready for support review."
+      },
+      {
+        "id": "EV-163",
+        "kind": "review",
+        "status": "pending",
+        "recordedAt": "2026-11-18T11:40:00.000Z",
+        "summary": "Notification worker owner has not yet approved the revised preference payload."
+      }
+    ],
+    "rollout": {
+      "strategy": "Migrate internal workspaces before staged cohorts of customer workspaces.",
+      "rollback": "Keep the legacy digest-preferences read path available until migration sign-off.",
+      "monitoringOwner": "Sofia Alvarez"
+    }
+  }
+]

@@ -1,0 +1,253 @@
+version: 1
+context:
+  /moldea/context/release-operations.md:
+    bindings:
+      - path: /agent/lib/catalog.ts
+        symbol: getRelease
+      - path: /agent/lib/brief-store.ts
+        symbol: saveBrief
+    affectedBy:
+      - /agent/tools/assess_release.ts
+      - /agent/lib/session.ts
+      - /agent/instructions/session.ts
+  /moldea/context/readiness-policy.md:
+    bindings:
+      - path: /agent/lib/readiness.ts
+        symbol: computeReadinessGates
+      - path: /agent/lib/briefs.ts
+        symbol: decideReadiness
+    affectedBy:
+      - /agent/lib/contracts.ts
+      - /data/releases.json
+  /moldea/context/evidence-policy.md:
+    bindings:
+      - path: /agent/lib/briefs.ts
+        symbol: validateAnalysis
+      - path: /agent/lib/briefs.ts
+        symbol: validateReview
+    affectedBy:
+      - /agent/lib/assessment.ts
+      - /agent/lib/contracts.ts
+      - /data/releases.json
+  /moldea/context/communication-policy.md:
+    bindings:
+      - path: /agent/lib/briefs.ts
+        symbol: createBrief
+    affectedBy:
+      - /agent/lib/contracts.ts
+decisions:
+  /moldea/decisions/1795012487000-enforce-readiness-in-application-code.md:
+    bindings:
+      - path: /agent/lib/readiness.ts
+        symbol: computeReadinessGates
+      - path: /agent/lib/briefs.ts
+        symbol: decideReadiness
+    affectedBy:
+      - /agent/tools/assess_release.ts
+      - /agent/lib/contracts.ts
+  /moldea/decisions/1795012487001-save-reviewed-briefs-as-versioned-artifacts.md:
+    bindings:
+      - path: /agent/lib/brief-store.ts
+        symbol: saveBrief
+    affectedBy:
+      - /agent/lib/assessment.ts
+      - /agent/tools/assess_release.ts
+agents:
+  release-coordinator:
+    runtime:
+      id: eve
+      guidance: /moldea/runtimes/eve.md
+    context:
+      - /moldea/context/release-operations.md
+      - /moldea/context/readiness-policy.md
+      - /moldea/context/evidence-policy.md
+      - /moldea/context/communication-policy.md
+    decisions:
+      - /moldea/decisions/1795012487000-enforce-readiness-in-application-code.md
+      - /moldea/decisions/1795012487001-save-reviewed-briefs-as-versioned-artifacts.md
+    bindings:
+      runtimeAgent:
+        path: /agent/agent.ts
+        symbol: releaseCoordinatorAgent
+      instructionLoader:
+        path: /agent/lib/prompts.ts
+        symbol: loadCoordinatorInstruction
+    tools:
+      list-releases:
+        name: list_releases
+        description: List available releases with their owners, target dates, and services.
+        implementation:
+          path: /agent/tools/list_releases.ts
+          symbol: executeListReleases
+        registration:
+          path: /agent/tools/list_releases.ts
+          symbol: listReleasesTool
+        inputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: EmptyInputSchema
+        outputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: ReleaseListSchema
+        affectedBy:
+          - /agent/lib/catalog.ts
+          - /data/releases.json
+      select-release:
+        name: select_release
+        description: Select an existing release as the session focus for follow-up questions.
+        implementation:
+          path: /agent/tools/select_release.ts
+          symbol: executeSelectRelease
+        registration:
+          path: /agent/tools/select_release.ts
+          symbol: selectReleaseTool
+        inputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: ReleaseIdInputSchema
+        outputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: SelectedReleaseSchema
+        affectedBy:
+          - /agent/lib/session.ts
+          - /agent/lib/catalog.ts
+      get-release-evidence:
+        name: get_release_evidence
+        description: Read a release evidence packet, including changes, checks, dependencies, and computed readiness gates.
+        implementation:
+          path: /agent/tools/get_release_evidence.ts
+          symbol: executeGetReleaseEvidence
+        registration:
+          path: /agent/tools/get_release_evidence.ts
+          symbol: getReleaseEvidenceTool
+        inputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: ReleaseIdInputSchema
+        outputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: EvidencePacketSchema
+        affectedBy:
+          - /agent/lib/readiness.ts
+          - /agent/lib/catalog.ts
+          - /data/releases.json
+      assess-release:
+        name: assess_release
+        description: Assess release evidence with a change analyst and readiness reviewer, then save a brief with enforced readiness gates.
+        implementation:
+          path: /agent/tools/assess_release.ts
+          symbol: executeAssessRelease
+        registration:
+          path: /agent/tools/assess_release.ts
+          symbol: assessReleaseTool
+        inputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: ReleaseIdInputSchema
+        outputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: BriefSummarySchema
+        affectedBy:
+          - /agent/lib/assessment.ts
+          - /agent/lib/briefs.ts
+          - /agent/lib/brief-store.ts
+          - /agent/lib/readiness.ts
+          - /agent/lib/catalog.ts
+          - /data/releases.json
+      list-briefs:
+        name: list_briefs
+        description: List saved readiness briefs for a release, newest first.
+        implementation:
+          path: /agent/tools/list_briefs.ts
+          symbol: executeListBriefs
+        registration:
+          path: /agent/tools/list_briefs.ts
+          symbol: listBriefsTool
+        inputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: ReleaseIdInputSchema
+        outputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: BriefListSchema
+        affectedBy:
+          - /agent/lib/brief-store.ts
+      read-brief:
+        name: read_brief
+        description: Read one saved readiness brief, including its evidence, decision, actions, and rendered Markdown.
+        implementation:
+          path: /agent/tools/read_brief.ts
+          symbol: executeReadBrief
+        registration:
+          path: /agent/tools/read_brief.ts
+          symbol: readBriefTool
+        inputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: BriefIdInputSchema
+        outputSchema:
+          path: /agent/lib/contracts.ts
+          symbol: BriefSchema
+        affectedBy:
+          - /agent/lib/brief-store.ts
+    skills:
+      release-readiness:
+        name: release-readiness
+        description: Prepare or refresh a reviewed release-readiness brief from a catalog release; use for readiness assessments and launch brief requests.
+        implementation:
+          path: /agent/skills/release-readiness/SKILL.md
+        affectedBy:
+          - /agent/tools/assess_release.ts
+    affectedBy:
+      - /agent/instructions.ts
+      - /agent/instructions/session.ts
+      - /agent/lib/session.ts
+  change-analyst:
+    runtime:
+      id: eve
+      guidance: /moldea/runtimes/eve.md
+    context:
+      - /moldea/context/release-operations.md
+      - /moldea/context/readiness-policy.md
+      - /moldea/context/evidence-policy.md
+    decisions:
+      - /moldea/decisions/1795012487000-enforce-readiness-in-application-code.md
+    bindings:
+      runtimeAgent:
+        path: /agent/subagents/change-analyst/agent.ts
+        symbol: changeAnalystAgent
+      instructionLoader:
+        path: /agent/lib/prompts.ts
+        symbol: loadAnalystInstruction
+      inputSchema:
+        path: /agent/lib/contracts.ts
+        symbol: ChangeAnalysisInputSchema
+      outputSchema:
+        path: /agent/lib/contracts.ts
+        symbol: ChangeAnalysisSchema
+    affectedBy:
+      - /agent/subagents/change-analyst/instructions.ts
+      - /agent/tools/assess_release.ts
+      - /agent/lib/assessment.ts
+  readiness-reviewer:
+    runtime:
+      id: eve
+      guidance: /moldea/runtimes/eve.md
+    context:
+      - /moldea/context/release-operations.md
+      - /moldea/context/readiness-policy.md
+      - /moldea/context/evidence-policy.md
+      - /moldea/context/communication-policy.md
+    decisions:
+      - /moldea/decisions/1795012487000-enforce-readiness-in-application-code.md
+    bindings:
+      runtimeAgent:
+        path: /agent/subagents/readiness-reviewer/agent.ts
+        symbol: readinessReviewerAgent
+      instructionLoader:
+        path: /agent/lib/prompts.ts
+        symbol: loadReviewerInstruction
+      inputSchema:
+        path: /agent/lib/contracts.ts
+        symbol: ReadinessReviewInputSchema
+      outputSchema:
+        path: /agent/lib/contracts.ts
+        symbol: ReadinessReviewSchema
+    affectedBy:
+      - /agent/subagents/readiness-reviewer/instructions.ts
+      - /agent/tools/assess_release.ts
+      - /agent/lib/assessment.ts

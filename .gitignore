@@ -147,3 +147,12 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Eve build and local session data
+.eve/
+.output/
+.nitro/
+.vercel/
+
+# Generated release briefs
+var/

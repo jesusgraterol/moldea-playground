@@ -1,143 +1,50 @@
-# moldea-playground
+# Launch Room
 
-Mock projects for exploring Moldea initialization, SDK integrations, Navigator artifacts, and PR Assurance. Each scenario has its own base and candidate branches. Deliver correct, realistic projects; incomplete or incorrect conditions belong only to scenarios that explicitly request them.
+Launch Room gives product delivery teams one place to review a release before rollout. It gathers changes, validation evidence, service dependencies, and operational checklists; specialist agents assess the evidence and prepare a release brief with explicit blockers and next actions.
 
-## Guide
+The application is built in TypeScript on Eve. Its local release catalog is the system of record for release facts. Reviewed briefs are saved as versioned local artifacts for a release manager to inspect. Launch Room does not deploy software, change source-control status, or publish announcements.
 
-| Reference | Purpose |
+## Development
+
+Use Node.js 24.15 or newer and npm. Install with `npm ci`, then start Eve with `npm run dev`. Eve provides the interactive conversation and HTTP session interface. Configure model access through Eve's normal provider configuration.
+
+The primary workflow is: identify a release, gather its evidence, run specialist review, and save a reviewed brief. Begin with: “Review the Atlas 2.8 release and prepare a readiness brief for the release manager.”
+
+Project context, operating policies, and runtime connections are documented under `moldea/`. The application includes typed domain contracts, catalog queries, readiness rules, evidence references, specialist orchestration, and report persistence.
+
+## Application workflow
+
+The release coordinator identifies a catalog release and keeps that selection across conversation turns. The `assess_release` workflow captures an evidence snapshot, asks the change analyst for structured findings, and passes the accepted analysis and the same evidence to the readiness reviewer. Application code enforces the final decision before saving the brief.
+
+Every required check and dependency needs passing evidence, and every change needs recorded validation. Failed work blocks readiness; pending or missing evidence requires review. Specialist findings can add a hold. They cannot waive those rules. Even `ready_for_signoff` still requires a release-manager decision outside the application.
+
+Saved briefs contain the decision, evidence gates, findings, proposed owner actions, customer-facing draft copy, and rendered Markdown. They are versioned snapshots under `var/briefs/`; a fresh assessment creates another brief.
+
+| Tool | Purpose |
 | --- | --- |
-| [Agent instructions](AGENTS.md) | Rules for building and preserving mocks. |
-| [Delivery procedure](docs/delivery.md) | Local review, operators, and completion evidence. |
-| [Planning and local records](#planning) | Optional setup tooling and local planning files. |
+| `list_releases` | Find releases and their owners, dates, and services. |
+| `select_release` | Retain the conversation's release focus. |
+| `get_release_evidence` | Read source evidence and computed readiness gates. |
+| `assess_release` | Run the specialists and save an enforced, reviewed brief. |
+| `list_briefs` | Find saved briefs for a release. |
+| `read_brief` | Retrieve a saved brief and its Markdown. |
 
-## Branch convention
+The catalog includes shared dashboards in `atlas-2-8`, export reliability in `atlas-2-7-3`, and notification preferences in `meridian-1-6`. Their different recorded evidence states give the application meaningful readiness decisions to explain.
 
-Keep `main` for conventions, the scenario index, and planning tooling. Each scenario uses two branches:
+## Commands and documentation
 
-```text
-test/<NNN>-<descriptive-slug>/base
-test/<NNN>-<descriptive-slug>/candidate
-```
+- `npm run dev:app` starts development with Eve's bundled self-modification extensions disabled.
+- `npm run typecheck` checks TypeScript contracts.
+- `npm run build` builds the application; `npm start` serves that build.
+- `npm run inspect` shows Eve's discovered instructions, tools, skill, subagents, and channels.
+- `npm run moldea:validate` checks canonical structure and implementation bindings.
 
-Use a unique three-digit ID starting at `001`; never reuse an ID. Choose a lowercase kebab-case slug that describes the behavior, adding the SDK or complexity when useful. Categories are flexible.
+See [usage and HTTP sessions](docs/usage.md), [architecture](docs/architecture.md), [project context](moldea/project.md), and [Eve runtime integration](moldea/runtimes/eve.md). The root owns the [release-readiness procedure](agent/skills/release-readiness/SKILL.md).
 
-Naming examples; the scenario index below records which scenarios exist:
+Canonical agent instructions and selected context documents are the source of Eve's compiled system instructions. Rebuild or use development reload after changing them. The source catalog is tracked in Git; generated runtime data and saved briefs remain local to the application instance.
 
-| Scenario | Branch prefix (append `/base` or `/candidate`) |
-| --- | --- |
-| Missing initialization | `test/001-init-missing` |
-| Incorrect initialization | `test/002-init-invalid` |
-| Simple OpenAI project | `test/003-sdk-openai-simple` |
-| Complex OpenAI Agents SDK project | `test/004-sdk-openai-agents-complex` |
-| All Navigator artifacts | `test/005-navigator-all-artifacts` |
+<!-- moldea:start -->
 
-**Both branches start at the same commit with identical contents.** Base is the completed project for the requested scenario, including missing or invalid initialization only when explicitly requested. Candidate starts as an unchanged copy of that baseline. The developer decides which changes to make to candidate while testing Cloud or PR Assurance; do not prepare feature changes, regressions, instruction drift, or other differences in advance. PR Assurance PRs go **from candidate into its matching base** after the developer introduces changes.
-
-After delivery, keep base stable. Candidate remains identical until the developer changes it or explicitly asks for particular changes. Use a new scenario ID for a different baseline. Do not create an artificial difference merely to enable a PR comparison. Preserve scenario branches independently of `main`.
-
-## Creating a scenario
-
-1. Read the canonical guidance on `main`. Confirm `AGENTS.md` and this README are committed there before creating scenarios. If they are unavailable, report the prerequisite; do not automatically commit unfinished setup or switch away from it.
-2. Check the index and local and remote branches for an unused ID and prefix. Stop on a collision; do not replace existing branches.
-3. Prefer a fresh worktree or clone for each independent scenario, leaving the main checkout available for guidance and index updates. If reusing a checkout, first inspect tracked, untracked, and ignored files with `git status --short --untracked-files=all --ignored`. Ignored dependencies and generated output survive branch switches. If unrelated leftovers make isolation uncertain, use a fresh workspace. Preserve existing files; do not automatically clean, delete, stash, or overwrite them.
-4. Start the scenario's base branch from `main`. Put the mock project at the repository root and use the stack, package manager, complexity, and artifacts requested for that scenario.
-5. Prepare and commit the complete project on base, then create candidate at that exact commit. Verify the branch tips match and their content diff is empty. Do not add candidate-only changes unless the developer explicitly requests them.
-6. Record the purpose, explicitly requested defects or omissions, and shared starting behavior in the index on `main`. Keep the index current when scenarios are created. Create a candidate-to-base PR only when requested after the developer has selected changes; keep mock projects out of `main`.
-7. For scenarios requiring initialized Moldea, complete the released skill's initialization workflow: repository-local skill and lockfile, compatible local CLI, grounded canonical foundation, existing-agent registration and real instruction consumption, plus managed README and AGENTS.md integration generated by the bundled writers. Track those files so the committed view used by Cloud includes the setup. Use the workflow's inventory and CLI binding coverage, and finish with launcher-backed `validate --json` after all writes. A zero-error structural result alone does not establish complete initialization: resolve unintended setup warnings and report any unfinished component. Never invent warning acceptance. Explicitly invalid scenarios must instead retain and report their intended diagnostics.
-8. Before handing off a completed scenario, release its branches from the construction worktree. When that checkout is clean, run `git switch --detach` there to retain the current commit and files while making the candidate available in the original checkout. Keep the scenario branches and worktree; report dirty or unrelated work rather than changing it. The original checkout stays on the user's selected branch.
-
-Git permits a branch to be checked out in one worktree at a time. If the editor reports that a candidate is already checked out elsewhere, detach the clean construction checkout at its existing commit, then retry the branch switch in the original checkout.
-
-### Fixture contents
-
-Include only files appropriate to the requested scenario. Shared documentation, agent instructions, planning files, and tooling manifests can be replaced or omitted on scenario branches when they affect detection or conflict with the mock. A scenario does not need a metadata file or template. Missing Moldea initialization still retains Git history for comparisons.
-
-Preserve explicitly requested invalid conditions; otherwise deliver a correct, coherent project. Fixture contents should look like normal applications: use realistic product names, ordinary SDK integrations, product documentation, and natural commit messages. Keep scenario labels, intentional-defect explanations, and PR Assurance expectations in descriptive branch names, the index on `main`, or PR descriptions. Do not name application files or components "mock", "dummy", or similar labels that disclose the exercise.
-
-Realistic sample inputs are fine. Use the SDK's normal integration code rather than adding fake endpoints, dummy-key client configuration, or canned response transports to make the application offline. Creating a fixture does not require configuring credentials or executing its API calls. Tests, CI, live API calls, secret infrastructure, and production hardening are unnecessary unless explicitly requested. For an all-artifacts scenario, establish Moldea's actual artifact contracts when creating it rather than assuming a fixed list here.
-
-Canonical agent instructions must feed the actual SDK invocation. Load the instruction file at runtime and declare its real instruction-loader binding; do not maintain a parallel hard-coded prompt. Trace the loaded text into the SDK's instruction field as well as checking binding discovery. Moldea CLI evidence is required, independent of the policy against adding application test suites, and must be paired with the full initialization workflow for initialized scenarios. Initialized SDK projects declare the CLI as a local development dependency; negative initialization cases may use a non-persisted project-local installation to preserve their tracked starting state.
-
-### Starting a session on a fixture branch
-
-A stripped fixture may have no usable README or `AGENTS.md`; those instructions cannot load automatically. Use this startup prompt for a fresh session when guidance is absent or replaced, and include it in handoffs:
-
-```text
-Before editing this Moldea mock, read the canonical repository guidance with
-`git show main:AGENTS.md` and `git show main:README.md`.
-Apply those mock-only rules and the explicit requirements for this scenario.
-Preserve its intentional defects and omissions. If either canonical document
-is unavailable, report the prerequisite instead of guessing the rules or
-adding guidance files to the fixture.
-```
-
-This requires the guidance to be committed on local `main`. Supply the prompt outside the mock; no instruction loader or stub file is required.
-
-## Scenario index
-
-The prefix identifies both branches using the suffixes above.
-
-| ID | Description | Branch prefix | Expected behavior | PR (optional) |
-| --- | --- | --- | --- | --- |
-| `001` | Missing Moldea initialization in a minimal Node.js project | `test/001-init-missing` | Identical branches with initialization intentionally absent. | — |
-| `002` | Invalid Moldea initialization in a minimal Node.js project | `test/002-init-invalid` | Identical branches with foundation files present and the manifest version deliberately using the wrong type. | — |
-| `003` | Release Brief: release-note summaries powered by the OpenAI SDK | `test/003-sdk-openai-simple` | Identical branches with the runtime prompt aligned to the saved one-sentence rule. | — |
-| `004` | Harbor Desk: customer support with specialist handoffs and independent reply review | `test/004-sdk-openai-agents-complex` | Identical branches with four Agents SDK agents, runtime-loaded context, read-only tools, and structured replies. | — |
-
-### 001: Missing initialization
-
-Both branches print `Hello, world!` and point to the same commit. They contain only the package manifest, source, license, and ignore rules: no Moldea initialization, shared guidance, planning files, or external dependencies.
-
-CLI `13.0.4` validation confirms the intended `MOLDEA_MANIFEST_MISSING` and `MOLDEA_PROJECT_FILE_MISSING` errors.
-
-Run either branch with `npm start`. No dependency installation is needed. The developer chooses later changes to `test/001-init-missing/candidate` and compares them against `test/001-init-missing/base`. Use the startup prompt above for fresh sessions on these stripped fixtures.
-
-### 002: Invalid initialization
-
-Both branches contain `moldea/moldea.yaml` and a non-empty `moldea/project.md`. The manifest deliberately declares `version: "1"` as a string. Repository Format v1 requires the integer `version: 1`, so the intended condition is present foundation files with invalid canonical configuration. Preserve that field type when working on this scenario.
-
-CLI `13.0.4` validation confirms the intended `MOLDEA_MANIFEST_VERSION_INVALID` error.
-
-Both branches print `Hello, world!`, point to the same commit, and contain the same invalid manifest and project foundation. Run either branch with `npm start`; no dependency installation is needed.
-
-The intended comparison is `test/002-init-invalid/candidate` into `test/002-init-invalid/base`. Shared guidance and planning tooling are omitted from these fixtures. Use the startup prompt above for fresh sessions.
-
-### 003: Release Brief
-
-Release Brief is a Node.js CLI using `openai@7.57.0` and the Responses API. Its Moldea foundation registers `note-summarizer` with runtime `openai`, binds `summarizeNote` in `/src/summary-agent.js` as its execution boundary, and binds `loadInstruction` in `/src/instructions.js` as its instruction loader.
-
-Both branches request exactly one concise plain-text sentence, matching the canonical agent instruction and project foundation. They point to the same commit and contain no prepared instruction-code drift. The developer chooses candidate changes during Cloud and PR Assurance testing.
-
-Each invocation reads `/moldea/agents/note-summarizer/instruction.md` and passes its complete text into the Responses API's `instructions` field. The canonical instruction includes its required agent identity. CLI `13.0.4` with Core `9.2.1` reports zero errors and zero warnings and passes both file and export checks for both bindings. The existing registered agent is `note-summarizer` with runtime `openai`; no additional workflows, decisions, or project-authored skills were found. `scope` maps each implementation path to that agent.
-
-The released Moldea skill `10.1.0` is installed at `.agents/skills/moldea`, with `skills-lock.json` pinning `moldea-ai/skill#v10.1.0`. Its bundled writers generated the managed README introduction and AGENTS.md routing region. The setup gate completed successfully, and the initialization inventory identified the installed distribution separately from project-authored skills. These files are tracked in both application branches.
-
-Use Node.js 22.17 or newer and `npm ci`. The application's README documents `npm start -- "Release note"`, the SDK's standard environment configuration, and `npm run moldea:validate` / `npm run moldea:inspect`. The CLI is pinned as a local development dependency. It contains ordinary SDK code, with no fake transport, canned response implementation, or provisioned credentials. No API calls or application test suites were run during creation; the instruction loader was invoked locally and its returned text inspected.
-
-The negative initialization scenarios `001` and `002` retain the expected `MOLDEA_INTEGRATION_BLOCK_MISSING` warning alongside their intended errors. Scenario `003` has complete repository-local initialization and no reported errors or warnings. No warnings were accepted or suppressed to obtain that result.
-
-The intended comparison is `test/003-sdk-openai-simple/candidate` into `test/003-sdk-openai-simple/base`. Use the startup prompt above for fresh sessions; shared playground instructions and planning tooling are omitted from the application branches.
-
-### 004: Harbor Desk
-
-Harbor Desk is a Node.js customer-support application using `@openai/agents@0.22.0` and `zod@4.6.7`. The `support-concierge` hands order and return questions to `order-specialist` and `returns-specialist`. A separate `reply-reviewer` run checks the proposed reply before the application returns it to the representative. All four agents use the `openai-agents-sdk` runtime and attach the same executable structured reply schema.
-
-The project includes a customer/order catalog and four real, read-only SDK tools: customer lookup, customer order listing, order lookup, and help-article search. Account scope comes from caller-supplied SDK context. The four canonical context documents cover support policy, customer data, order operations, and returns policy. They are selected and loaded by each agent's instruction callback alongside its complete canonical instruction and the current request context. Specialist handoff descriptions supply the SDK's routing metadata.
-
-The architecture document describes the two-stage workflow. Two accepted decisions record the specialist-handoff/review design and read-only account-tool boundary. Runtime guidance explains the actual instruction, tool, schema, context, and routing connections. The initialization inventory found these four agents and their draft/review workflow, the architecture and policy documents, and both decisions; there are no additional inline model workflows or project-authored Agent Skills. The installed Moldea distribution is separate from application-owned artifacts.
-
-Moldea initialization includes the released skill `10.1.0`, its tracked installation and lockfile, local CLI `13.0.4`, canonical foundation, and README/AGENTS.md integration generated by the bundled writers. Its setup gate completed successfully. Final launcher-backed validation reports **zero errors, zero warnings, and 49 bindings with both file and export checks passed**. No warnings were accepted or suppressed. `scope` detects all four agents and the declared context, decision, and tool relationships for the inspected implementation paths.
-
-Local SDK assembly resolved every agent's instruction callback, confirmed the full canonical instruction prefix and selected context documents, inspected both specialist handoff descriptions and the shared output schema, and invoked the four registered tools against the account catalog. JavaScript syntax and local documentation links were checked. No live model calls, application test suites, or Cloud/PR Assurance runs were performed. Runtime answer quality remains for the developer's chosen checks.
-
-Both branches start at commit `61d9c12` with identical contents and no prepared candidate changes. The construction worktree is detached so either branch can be selected in the original checkout. Use Node.js 22.17 or newer and `npm ci`; the application README documents the command, normal SDK environment configuration, and local Moldea commands.
-
-The intended comparison is `test/004-sdk-openai-agents-complex/candidate` into `test/004-sdk-openai-agents-complex/base`. Use the startup prompt above for fresh sessions; playground guidance and planning tooling are omitted from the application branches.
-
-## Planning
-
-The setup uses the exact development dependency `jg-plans@0.6.1`. It requires Node.js 24.15.0 or newer. Use `npm ci` to install the main checkout's tooling and `./node_modules/.bin/jg-plans --version --json` to inspect the local CLI. This does not choose a runtime or package manager for mock projects.
-
-Planning records live in the [local `jg-plans/` directory](jg-plans/). They remain unpublished unless explicitly selected for publication; this directory link is for workspace navigation and may be unavailable in a remote checkout. No planning workflow is required for an ordinary mock request unless requested.
-
-For repository setup, inspect the documents and links, run `npm ls --depth=0`, verify the CLI version, and check `git diff --check` and `git status --short`. Inspect new files directly because ordinary diffs omit untracked files. Check a selected plan with `./node_modules/.bin/jg-plans check --directory <plan-directory> --json`. No build or automated tests are needed.
+This project uses [moldea](https://skill.moldea.ai) to keep project knowledge in Git and bring relevant context into coding-agent work.
+Start at [the project overview](moldea/project.md); [the manifest](moldea/moldea.yaml) maps context and implementation relationships.
+<!-- moldea:end -->

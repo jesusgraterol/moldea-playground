@@ -1,6 +1,30 @@
 {
+  "name": "launch-room",
+  "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "description": "Release readiness reviews and evidence-backed launch briefs for product delivery teams.",
+  "engines": {
+    "node": ">=24.15.0"
+  },
+  "scripts": {
+    "dev": "eve dev",
+    "build": "eve build",
+    "typecheck": "tsc --noEmit",
+    "moldea:validate": "moldea validate --json",
+    "moldea:inspect": "moldea inspect --json",
+    "dev:app": "eve dev --no-default-extensions",
+    "start": "eve start",
+    "inspect": "eve info --json"
+  },
+  "dependencies": {
+    "ai": "7.0.176",
+    "eve": "1.0.2",
+    "zod": "4.6.7"
+  },
   "devDependencies": {
-    "jg-plans": "0.6.1"
+    "@moldea.ai/cli": "13.0.4",
+    "@types/node": "24.19.2",
+    "typescript": "7.0.2"
   }
 }
