@@ -29,7 +29,8 @@ Naming examples; the scenario index below records which scenarios exist:
 | Incorrect initialization | `test/002-init-invalid` |
 | Simple OpenAI project | `test/003-sdk-openai-simple` |
 | Complex OpenAI Agents SDK project | `test/004-sdk-openai-agents-complex` |
-| All Navigator artifacts | `test/005-navigator-all-artifacts` |
+| TypeScript Eve release-readiness application | `test/005-sdk-eve-typescript` |
+| All Navigator artifacts | `test/006-navigator-all-artifacts` |
 
 **Both branches start at the same commit with identical contents.** Base is the completed project for the requested scenario, including missing or invalid initialization only when explicitly requested. Candidate starts as an unchanged copy of that baseline. The developer decides which changes to make to candidate while testing Cloud or PR Assurance; do not prepare feature changes, regressions, instruction drift, or other differences in advance. PR Assurance PRs go **from candidate into its matching base** after the developer introduces changes.
 
@@ -83,6 +84,7 @@ The prefix identifies both branches using the suffixes above.
 | `002` | Invalid Moldea initialization in a minimal Node.js project | `test/002-init-invalid` | Identical branches with foundation files present and the manifest version deliberately using the wrong type. | — |
 | `003` | Release Brief: release-note summaries powered by the OpenAI SDK | `test/003-sdk-openai-simple` | Identical branches with the runtime prompt aligned to the saved one-sentence rule. | — |
 | `004` | Harbor Desk: customer support with specialist handoffs and independent reply review | `test/004-sdk-openai-agents-complex` | Identical branches with four Agents SDK agents, runtime-loaded context, read-only tools, and structured replies. | — |
+| `005` | Launch Room: TypeScript Eve application for release readiness and reviewed briefs | `test/005-sdk-eve-typescript` | Identical correct branches with native subagents, durable workflow, executable readiness rules, typed tools, session context, a skill, and local brief persistence. | — |
 
 ### 001: Missing initialization
 
@@ -133,6 +135,24 @@ Local SDK assembly resolved every agent's instruction callback, confirmed the fu
 Both branches start at commit `61d9c12` with identical contents and no prepared candidate changes. The construction worktree is detached so either branch can be selected in the original checkout. Use Node.js 22.17 or newer and `npm ci`; the application README documents the command, normal SDK environment configuration, and local Moldea commands.
 
 The intended comparison is `test/004-sdk-openai-agents-complex/candidate` into `test/004-sdk-openai-agents-complex/base`. Use the startup prompt above for fresh sessions; playground guidance and planning tooling are omitted from the application branches.
+
+### 005: Launch Room
+
+Launch Room is a TypeScript application using `eve@1.0.2`, `ai@7.0.176`, `zod@4.6.7`, and `typescript@7.0.2`, with Node.js 24.15 or newer. It serves release managers through Eve's conversation and HTTP session interface. The release coordinator selects a catalog release and invokes a durable assessment workflow: capture evidence, run the change analyst, validate the result, run the readiness reviewer against the same snapshot, enforce the decision, and save a versioned local brief. The application does not deploy releases or publish announcements.
+
+The baseline contains three registered agents with runtime `eve`: `release-coordinator`, `change-analyst`, and `readiness-reviewer`. Its six authored tools have actual implementation/registration exports and attached input/output schemas. The root's project-authored `release-readiness` skill is discovered by Eve. A named Eve state slot retains the selected release ID for follow-up turns. Local JSON briefs include structured findings, evidence, next actions, and rendered Markdown; their IDs include the workflow call ID so a new assessment creates a new snapshot.
+
+Four focused canonical contexts own release operations, readiness policy, evidence policy, and communication policy. Two accepted decisions record application-enforced readiness and versioned local artifacts. Architecture, usage, and runtime documentation explain the boundaries. The initialization inventory found these three agents, their assessment workflow, the policy/architecture documents, both decisions, and one project-authored skill. Eve's generated copies of that skill are build output, not additional owned skills. The installed Moldea distribution is also separate.
+
+Complete canonical instructions and selected context enter Eve through supported `?raw` asset imports and dedicated loaders. Static instruction modules compile their full text into Eve's runtime artifacts; changes require a rebuild or development reload. The compiled manifest was inspected for all three complete instruction prefixes, selected context bodies, specialist handoff descriptions, attached schemas on all six tools, and the authored skill procedure. The specialists' input and output schemas are consumed on their actual workflow call paths. Impact declarations cover the inspected source, including readiness rules, reference validation, session state, workflow sequencing, and persistence.
+
+Moldea initialization includes released skill `10.1.0`, its tracked installation and lockfile, local CLI `13.0.4`, canonical foundation, and README/AGENTS.md integration generated by the bundled writers. The setup gate completed successfully. Final launcher-backed validation reports **zero errors, zero warnings, and 45 successful file checks**. All **44 declared export checks passed**; the Markdown skill implementation has no symbol and therefore has no export check. No warnings were accepted or suppressed. `scope` detects all three agents and the declared context, decision, tool, and skill ownership for the inspected core paths.
+
+TypeScript checking and Eve compilation passed. Compilation used `--skip-sandbox-prewarm`; no sandbox or hosted deployment was provisioned. `eve info --json` reports ready with zero discovery errors or warnings and discovers the two specialists, six tools, one skill, and default channels. Local catalog queries confirmed the different recorded readiness gate states. Documentation links and Git whitespace checks passed. No application test suites, live model calls, or Cloud/PR Assurance runs were performed; model answers and actual Assurance findings remain unverified.
+
+Both branches start at `ead4cae` with identical contents and no prepared candidate changes. The construction worktree is detached, and the original checkout is preserved. The intended comparison is `test/005-sdk-eve-typescript/candidate` into `test/005-sdk-eve-typescript/base` after the developer chooses changes.
+
+See [the PR Assurance experiment guide](docs/005-launch-room-assurance.md) for suggested later mutations and control cases. That guide lives only on `main`; application branches contain ordinary product files. Use the startup prompt above for fresh editing sessions.
 
 ## Planning
 
