@@ -20,14 +20,14 @@ Every required check and dependency needs passing evidence, and every change nee
 
 Saved briefs contain the decision, evidence gates, findings, proposed owner actions, customer-facing draft copy, and rendered Markdown. They are versioned snapshots under `var/briefs/`; a fresh assessment creates another brief.
 
-| Tool | Purpose |
-| --- | --- |
-| `list_releases` | Find releases and their owners, dates, and services. |
-| `select_release` | Retain the conversation's release focus. |
-| `get_release_evidence` | Read source evidence and computed readiness gates. |
-| `assess_release` | Run the specialists and save an enforced, reviewed brief. |
-| `list_briefs` | Find saved briefs for a release. |
-| `read_brief` | Retrieve a saved brief and its Markdown. |
+| Tool                   | Purpose                                                   |
+| ---------------------- | --------------------------------------------------------- |
+| `list_releases`        | Find releases and their owners, dates, and services.      |
+| `select_release`       | Retain the conversation's release focus.                  |
+| `get_release_evidence` | Read source evidence and computed readiness gates.        |
+| `assess_release`       | Run the specialists and save an enforced, reviewed brief. |
+| `list_briefs`          | Find saved briefs for a release.                          |
+| `read_brief`           | Retrieve a saved brief and its Markdown.                  |
 
 The catalog includes shared dashboards in `atlas-2-8`, export reliability in `atlas-2-7-3`, and notification preferences in `meridian-1-6`. Their different recorded evidence states give the application meaningful readiness decisions to explain.
 
@@ -47,4 +47,7 @@ Canonical agent instructions and selected context documents are the source of Ev
 
 This project uses [moldea](https://skill.moldea.ai) to keep project knowledge in Git and bring relevant context into coding-agent work.
 Start at [the project overview](moldea/project.md); [the manifest](moldea/moldea.yaml) maps context and implementation relationships.
+
 <!-- moldea:end -->
+
+This project is really good for product delivery!
