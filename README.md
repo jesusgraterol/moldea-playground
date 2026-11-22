@@ -49,5 +49,3 @@ This project uses [moldea](https://skill.moldea.ai) to keep project knowledge in
 Start at [the project overview](moldea/project.md); [the manifest](moldea/moldea.yaml) maps context and implementation relationships.
 
 <!-- moldea:end -->
-
-This project is really good for product delivery!
