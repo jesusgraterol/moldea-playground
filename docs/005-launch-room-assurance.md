@@ -1,6 +1,6 @@
 # Launch Room: PR Assurance experiments
 
-Baseline: `test/005-sdk-eve-typescript/base`. Make selected changes on `test/005-sdk-eve-typescript/candidate`, then compare candidate into base. Both start at `ead4cae`; none of the mutations below has been applied.
+Reference branch: `test/005-sdk-eve-typescript/base`. Make selected changes on `test/005-sdk-eve-typescript/candidate`, then compare candidate into base. Both were created at `ead4cae`; accepted test PRs may subsequently advance base. None of the mutations below was prepared in the starting project.
 
 The application is a correct starting point with explicit policy-to-code relationships. Most suggestions below can preserve TypeScript compilation and structural Moldea validity while changing behavior. They give PR Assurance concrete semantic discrepancies to inspect. The expected concerns are hypotheses for the developer's run, not observed Cloud results or a guarantee of particular wording or severity.
 
@@ -17,7 +17,7 @@ The application is a correct starting point with explicit policy-to-code relatio
 | Derive saved brief IDs only from release ID, dropping workflow call ID. | `agent/lib/assessment.ts`, `persistAssessment` | A fresh assessment reuses an older artifact instead of creating a new snapshot. Conflicts with versioned-brief policy and the accepted persistence decision. |
 | Return a newly selected release from the tool but stop updating the Eve state slot. | `agent/tools/select_release.ts`, `executeSelectRelease` | The tool reports one selection while subsequent dynamic context retains another. Conflicts with release operations and coordinator follow-up behavior. |
 
-Start with one mutation per PR when comparing findings. Keep canonical policy unchanged when the purpose is to measure detection of implementation drift. The base branch remains stable; only make an intentional baseline revision when explicitly requested.
+Start with one mutation per PR when comparing findings. Keep canonical policy unchanged when the purpose is to measure detection of implementation drift. Merge changes the developer wants to retain; otherwise close the PR without merging. After either outcome, follow the README's test-completion workflow to reset local and remote candidate to the freshly fetched `origin/test/005-sdk-eve-typescript/base`. Do not reset a pending test or undo an approved base merge.
 
 ## Control cases
 

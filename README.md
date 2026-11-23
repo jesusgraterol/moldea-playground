@@ -34,7 +34,18 @@ Naming examples; the scenario index below records which scenarios exist:
 
 **Both branches start at the same commit with identical contents.** Base is the completed project for the requested scenario, including missing or invalid initialization only when explicitly requested. Candidate starts as an unchanged copy of that baseline. The developer decides which changes to make to candidate while testing Cloud or PR Assurance; do not prepare feature changes, regressions, instruction drift, or other differences in advance. PR Assurance PRs go **from candidate into its matching base** after the developer introduces changes.
 
-After delivery, keep base stable. Candidate remains identical until the developer changes it or explicitly asks for particular changes. Use a new scenario ID for a different baseline. Do not create an artificial difference merely to enable a PR comparison. Preserve scenario branches independently of `main`.
+Base is the current accepted reference for its scenario. The developer may merge a test PR into base to retain its changes, or close it without merging to discard them. Candidate remains identical until the developer changes it or explicitly asks for particular changes. After every completed test, reset candidate to the current matching base fetched from `origin`, so the next test starts as if candidate had just been created there. Use a new scenario ID for a different project baseline. Do not create an artificial difference merely to enable a PR comparison. Preserve scenario branches independently of `main`.
+
+### Finishing a test
+
+1. Finish the PR by merging accepted changes or closing it without merging. Preserve an active candidate change until its test is complete.
+2. Fetch `origin` and record the exact remote base and candidate commits. Use `origin/test/<NNN>-<slug>/base` as the reset source, including any approved merges; do not substitute local base or the original scenario-creation commit.
+3. Check the candidate checkout for unfinished tracked and untracked work. Preserve it rather than automatically cleaning, stashing, or overwriting it. Keep a local archive ref for the previous candidate commit before resetting completed test history. Ignored dependencies and runtime data are not deleted automatically.
+4. Reset the local candidate branch and tracked contents to that fetched remote base. Operate in the worktree that owns candidate; do not force another checkout to release it.
+5. Update the remote candidate with an explicit `--force-with-lease` expecting the remote candidate commit recorded in step 2. Stop if the lease fails. Resetting candidate must not rewrite base or undo approved merges.
+6. Verify local candidate, remote candidate, and the fetched remote base have identical commits and an empty content diff. The completed test's candidate-only history is no longer the next test's starting point.
+
+A newly reset candidate has nothing to compare. Make, commit, and push the next chosen change before opening another candidate-to-base PR. If a candidate still starts from an older base after a merge, rebase its active changes onto the current remote base and preserve the intended candidate contents before publishing the updated history.
 
 ## Creating a scenario
 
