@@ -50,4 +50,4 @@ Start at [the project overview](moldea/project.md); [the manifest](moldea/moldea
 
 <!-- moldea:end -->
 
-This project is really good for product delivery!
+Launch room can help your team achieve amazing things!
