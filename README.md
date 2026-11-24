@@ -50,4 +50,4 @@ Start at [the project overview](moldea/project.md); [the manifest](moldea/moldea
 
 <!-- moldea:end -->
 
-Launch Room can really give your team an edge.
+Launch Room can really give your team an edge. It makes your project better!
