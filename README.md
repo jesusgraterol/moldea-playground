@@ -43,4 +43,11 @@ See [usage and HTTP sessions](docs/usage.md), [architecture](docs/architecture.m
 
 Canonical agent instructions and selected context documents are the source of Eve's compiled system instructions. Rebuild or use development reload after changing them. The source catalog is tracked in Git; generated runtime data and saved briefs remain local to the application instance.
 
+<!-- moldea:start -->
+
+This project uses [moldea](https://skill.moldea.ai) to keep project knowledge in Git and bring relevant context into coding-agent work.
+Start at [the project overview](moldea/project.md); [the manifest](moldea/moldea.yaml) maps context and implementation relationships.
+
+<!-- moldea:end -->
+
 Launch Room can really give your team an edge. It makes your project better!
