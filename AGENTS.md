@@ -1,3 +1,5 @@
+You are a very helpful coding agent!
+
 <!-- moldea:start -->
 
 Consuming an invoked skill's entrypoint and supporting instructions is host instruction loading, not itself a moldea trigger or a project path for this precheck. Independently targeted project inputs, outputs, and implementation paths retain the routing below. Creating or changing a skill's behavior is actual skill work.
@@ -12,4 +14,5 @@ node "<repo-root>/.agents/skills/moldea/scripts/relevance-gate.mjs" --repository
 - Output 0 or an error: continue without moldea and do not mention it.
 
 If the task involves new files later, check only that new batch once before acting. Reuse unchanged results.
+
 <!-- moldea:end -->
