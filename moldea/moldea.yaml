@@ -2,7 +2,7 @@ version: 1
 context:
   /moldea/context/release-operations.md:
     bindings:
-      - path: /agent/lib/catalog.ts
+      - path: /agent/lib/catalogo.ts
         symbol: getRelease
       - path: /agent/lib/brief-store.ts
         symbol: saveBrief
