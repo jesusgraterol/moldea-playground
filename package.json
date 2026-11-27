@@ -8,13 +8,10 @@
   },
   "scripts": {
     "start": "node src/index.js",
-    "moldea:validate": "moldea validate",
-    "moldea:inspect": "moldea inspect"
+    "moldea:validate": "node .agents/skills/moldea/scripts/moldea-cli/moldea.mjs validate --json",
+    "moldea:inspect": "node .agents/skills/moldea/scripts/moldea-cli/moldea.mjs inspect --json"
   },
   "dependencies": {
     "openai": "7.57.0"
-  },
-  "devDependencies": {
-    "@moldea.ai/cli": "13.0.4"
   }
 }

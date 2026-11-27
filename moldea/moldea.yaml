@@ -2,8 +2,6 @@ version: 1
 
 agents:
   note-summarizer:
-    runtime:
-      id: openai
     bindings:
       runtimeAgent:
         path: /src/summary-agent.js

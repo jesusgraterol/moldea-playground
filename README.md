@@ -19,7 +19,7 @@ Run `npm start -- "Checkout latency dropped after adding a cache. Next, improve 
 
 The runtime reads `moldea/agents/note-summarizer/instruction.md` for every summary and passes its contents as the Responses API's `instructions`. Changes to that file apply on the next invocation.
 
-Use `npm run moldea:validate` to validate project structure and `npm run moldea:inspect` to inspect agents and binding coverage.
+The repository includes the moldea skill and its bundled CLI. Run `npm run moldea:validate` to check project structure, or `npm run moldea:inspect` to inspect agents and binding coverage.
 
 <!-- moldea:start -->
 
