@@ -17,7 +17,7 @@ context:
   /moldea/context/release-operations.md:
     bindings:
       - path: /agent/lib/catalog.ts
-        symbol: getRelease
+        symbol: getLastRelease
       - path: /agent/lib/brief-store.ts
         symbol: saveBrief
     affectedBy:
