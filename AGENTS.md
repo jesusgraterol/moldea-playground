@@ -15,4 +15,5 @@ node "<repo-root>/.agents/skills/moldea/scripts/relevance-gate.mjs" --repository
 Use the absolute repository root and file paths relative to it, including from subdirectories. Pass only known paths; never scan or run Git for this precheck. Skip the path check when none are known. Check newly discovered paths as a separate batch and reuse unchanged results.
 
 On output 1, read the exact SKILL.md unless its complete unchanged instructions are already available. Retain the successful gate mode, checked paths, and result. Missing files, output 0, and errors continue silently. Use only the repository-local installation, without searching for another copy or installing or initializing through this precheck.
+
 <!-- moldea:end -->
