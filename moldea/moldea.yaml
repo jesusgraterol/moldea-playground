@@ -1,5 +1,12 @@
 version: 1
 context:
+  /moldea/context/openai-agents-integration.md:
+    affectedBy:
+      - /src/agents/**
+      - /src/instructions.js
+      - /src/schemas.js
+      - /src/tools/**
+      - /src/workflow.js
   /moldea/context/support-policy.md:
     bindings:
       - path: /src/workflow.js
@@ -39,9 +46,6 @@ decisions:
       - /src/tools/help.js
 agents:
   support-concierge:
-    runtime:
-      id: openai-agents-sdk
-      guidance: /moldea/runtimes/openai-agents.md
     context:
       - /moldea/context/support-policy.md
       - /moldea/context/customer-data.md
@@ -94,9 +98,6 @@ agents:
       - /src/agents/order-specialist.js
       - /src/agents/returns-specialist.js
   order-specialist:
-    runtime:
-      id: openai-agents-sdk
-      guidance: /moldea/runtimes/openai-agents.md
     context:
       - /moldea/context/support-policy.md
       - /moldea/context/customer-data.md
@@ -163,9 +164,6 @@ agents:
     affectedBy:
       - /src/workflow.js
   returns-specialist:
-    runtime:
-      id: openai-agents-sdk
-      guidance: /moldea/runtimes/openai-agents.md
     context:
       - /moldea/context/support-policy.md
       - /moldea/context/customer-data.md
@@ -217,9 +215,6 @@ agents:
     affectedBy:
       - /src/workflow.js
   reply-reviewer:
-    runtime:
-      id: openai-agents-sdk
-      guidance: /moldea/runtimes/openai-agents.md
     context:
       - /moldea/context/support-policy.md
       - /moldea/context/customer-data.md

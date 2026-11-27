@@ -11,7 +11,7 @@ The application uses the OpenAI Agents SDK with a support concierge, order speci
 - [Order operations](context/order-operations.md): fulfillment records and delivery explanations.
 - [Returns policy](context/returns-policy.md): eligibility questions and representative review.
 - [Workflow architecture](../docs/architecture.md): request flow and executable boundaries.
-- [Runtime integration](runtimes/openai-agents.md): instruction callbacks, context, schemas, and routing.
+- [Agents SDK integration](context/openai-agents-integration.md): instruction callbacks, context, schemas, and routing.
 - [Specialist handoffs and review](decisions/1794692368000-specialist-handoffs-and-review.md): active orchestration rationale.
 - [Read-only account tools](decisions/1794692368001-read-only-account-tools.md): active capability boundary.
 

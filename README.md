@@ -27,11 +27,11 @@ Customer `cus_1042` owns orders `HD-10483` and `HD-10411`; customer `cus_1087` o
 
 Each agent reads its complete instruction from `moldea/agents/` whenever the SDK resolves its instructions. Relevant policy documents from `moldea/context/` and the request's account scope are supplied in that same callback. Tool results are account-scoped, and all four agents share the same Zod output contract.
 
-See [project context](moldea/project.md), [runtime integration](moldea/runtimes/openai-agents.md), and [workflow architecture](docs/architecture.md). `src/workflow.js` owns the two-stage draft/review flow; `src/agents/` owns SDK definitions; `src/tools/` owns read-only capabilities.
+See [project context](moldea/project.md), [Agents SDK integration](moldea/context/openai-agents-integration.md), and [workflow architecture](docs/architecture.md). `src/workflow.js` owns the two-stage draft/review flow; `src/agents/` owns SDK definitions; `src/tools/` owns read-only capabilities.
 
 ## Moldea
 
-The repository includes its local CLI and skill installation. Run `npm run moldea:validate` to check canonical structure and file/export bindings, or `npm run moldea:inspect` to inspect the repository model. Application execution is separate from these commands.
+The repository includes the moldea skill and its bundled CLI. Run `npm run moldea:validate` to check canonical structure and file/export bindings, or `npm run moldea:inspect` to inspect the repository model. Application execution is separate from these commands.
 
 <!-- moldea:start -->
 

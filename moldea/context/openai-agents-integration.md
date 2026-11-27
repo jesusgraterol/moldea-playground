@@ -10,7 +10,7 @@ Concierge reads support policy and customer data; order specialist adds order op
 
 ## Routing metadata
 
-Concierge registers the two specialist Agent instances in its `handoffs` list. Their SDK `handoffDescription` fields are routing-facing metadata, loaded from each target's `handoff-description.md`. Agent `description.md` files remain general responsibility metadata. They are not used as behavioral prompts or substituted for handoff descriptions.
+Concierge registers the two specialist Agent instances in its `handoffs` list. Their SDK `handoffDescription` fields load the routing text from each specialist’s canonical `description.md`. The `instructions` callbacks load the separate canonical instructions.
 
 Handoffs remain within the draft run and preserve the shared account context. The reviewer is invoked as a separate second run by `runSupportWorkflow`, using the original message and structured draft as input. No manifest routing graph is invented.
 

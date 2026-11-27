@@ -9,14 +9,11 @@
   },
   "scripts": {
     "start": "node src/cli.js",
-    "moldea:validate": "moldea validate --json",
-    "moldea:inspect": "moldea inspect --json"
+    "moldea:validate": "node .agents/skills/moldea/scripts/moldea-cli/moldea.mjs validate --json",
+    "moldea:inspect": "node .agents/skills/moldea/scripts/moldea-cli/moldea.mjs inspect --json"
   },
   "dependencies": {
     "@openai/agents": "0.22.0",
     "zod": "4.6.7"
-  },
-  "devDependencies": {
-    "@moldea.ai/cli": "13.0.4"
   }
 }

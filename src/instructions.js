@@ -40,5 +40,5 @@ export function loadHandoffDescription(agentId) {
   if (!['order-specialist', 'returns-specialist'].includes(agentId)) {
     throw new Error('No handoff description for this agent.');
   }
-  return readFile(resolve(canonicalRoot, 'agents', agentId, 'handoff-description.md'), 'utf8');
+  return readFile(resolve(canonicalRoot, 'agents', agentId, 'description.md'), 'utf8');
 }
