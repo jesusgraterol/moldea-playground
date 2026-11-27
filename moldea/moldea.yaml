@@ -21,13 +21,17 @@ context:
       - /src/tools/account.js
       - /src/workflow.js
       - /src/instructions.js
+      - /src/schemas.js
   /moldea/context/order-operations.md:
     affectedBy:
+      - /src/catalog.js
+      - /src/schemas.js
       - /src/tools/account.js
       - /data/orders.json
   /moldea/context/returns-policy.md:
     affectedBy:
       - /src/instructions.js
+      - /src/schemas.js
       - /src/tools/account.js
       - /data/orders.json
 decisions:
