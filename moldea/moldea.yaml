@@ -3,10 +3,17 @@ context:
   /moldea/context/eve-integration.md:
     affectedBy:
       - /agent/agent.ts
+      - /agent/instructions.ts
+      - /agent/instructions/session.ts
+      - /agent/lib/contracts.ts
       - /agent/lib/prompts.ts
+      - /agent/lib/session.ts
+      - /agent/skills/release-readiness/SKILL.md
       - /agent/subagents/change-analyst/agent.ts
+      - /agent/subagents/change-analyst/instructions.ts
       - /agent/subagents/readiness-reviewer/agent.ts
-      - /agent/tools/assess_release.ts
+      - /agent/subagents/readiness-reviewer/instructions.ts
+      - /agent/tools/**
   /moldea/context/release-operations.md:
     bindings:
       - path: /agent/lib/catalog.ts
@@ -15,6 +22,8 @@ context:
         symbol: saveBrief
     affectedBy:
       - /agent/tools/assess_release.ts
+      - /agent/tools/select_release.ts
+      - /data/releases.json
       - /agent/lib/session.ts
       - /agent/instructions/session.ts
   /moldea/context/readiness-policy.md:
@@ -35,6 +44,7 @@ context:
     affectedBy:
       - /agent/lib/assessment.ts
       - /agent/lib/contracts.ts
+      - /agent/lib/readiness.ts
       - /data/releases.json
   /moldea/context/communication-policy.md:
     bindings:
