@@ -1,5 +1,12 @@
 version: 1
 context:
+  /moldea/context/eve-integration.md:
+    affectedBy:
+      - /agent/agent.ts
+      - /agent/lib/prompts.ts
+      - /agent/subagents/change-analyst/agent.ts
+      - /agent/subagents/readiness-reviewer/agent.ts
+      - /agent/tools/assess_release.ts
   /moldea/context/release-operations.md:
     bindings:
       - path: /agent/lib/catalog.ts
@@ -54,10 +61,8 @@ decisions:
       - /agent/tools/assess_release.ts
 agents:
   release-coordinator:
-    runtime:
-      id: eve
-      guidance: /moldea/runtimes/eve.md
     context:
+      - /moldea/context/eve-integration.md
       - /moldea/context/release-operations.md
       - /moldea/context/readiness-policy.md
       - /moldea/context/evidence-policy.md
@@ -197,10 +202,8 @@ agents:
       - /agent/instructions/session.ts
       - /agent/lib/session.ts
   change-analyst:
-    runtime:
-      id: eve
-      guidance: /moldea/runtimes/eve.md
     context:
+      - /moldea/context/eve-integration.md
       - /moldea/context/release-operations.md
       - /moldea/context/readiness-policy.md
       - /moldea/context/evidence-policy.md
@@ -224,10 +227,8 @@ agents:
       - /agent/tools/assess_release.ts
       - /agent/lib/assessment.ts
   readiness-reviewer:
-    runtime:
-      id: eve
-      guidance: /moldea/runtimes/eve.md
     context:
+      - /moldea/context/eve-integration.md
       - /moldea/context/release-operations.md
       - /moldea/context/readiness-policy.md
       - /moldea/context/evidence-policy.md

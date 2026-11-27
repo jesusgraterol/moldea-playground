@@ -14,7 +14,7 @@ The application reads its release catalog from Git and writes generated briefs u
 - [Communication policy](context/communication-policy.md): internal and customer-facing writing.
 - [Architecture](../docs/architecture.md): domain layers, durable workflow, and persistence.
 - [Usage](../docs/usage.md): representative requests and the HTTP session interface.
-- [Eve integration](runtimes/eve.md): discovery, canonical instruction compilation, and SDK connections.
+- [Eve integration](context/eve-integration.md): discovery, canonical instruction compilation, and SDK connections.
 - [Enforced readiness decisions](decisions/1795012487000-enforce-readiness-in-application-code.md).
 - [Versioned local briefs](decisions/1795012487001-save-reviewed-briefs-as-versioned-artifacts.md).
 - [Release-readiness procedure](../agent/skills/release-readiness/SKILL.md).

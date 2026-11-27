@@ -39,6 +39,6 @@ A saved brief ID is the SHA-256 of release ID and workflow call ID. Repeating th
 
 The root's named Eve state retains only the selected release ID across turns. A dynamic system instruction exposes that focus. The workflow accepts an explicit release ID and does not read session state from its steps. Specialists do not inherit parent state or conversation.
 
-Static system instructions derive from complete canonical agent instructions plus selected context through `?raw` imports. Eve compiles those strings into its runtime artifacts. Canonical edits require a rebuild or development reload. See [runtime guidance](../moldea/runtimes/eve.md) for the complete connection trace.
+Static system instructions derive from complete canonical agent instructions plus selected context through `?raw` imports. Eve compiles those strings into its runtime artifacts. Canonical edits require a rebuild or development reload. See [Eve integration](../moldea/context/eve-integration.md) for the complete connection trace.
 
 The application uses Eve's default conversation/HTTP channel and local runtime storage. It defines no external connections or deployment actions.

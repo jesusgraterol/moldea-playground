@@ -38,8 +38,9 @@ The catalog includes shared dashboards in `atlas-2-8`, export reliability in `at
 - `npm run build` builds the application; `npm start` serves that build.
 - `npm run inspect` shows Eve's discovered instructions, tools, skill, subagents, and channels.
 - `npm run moldea:validate` checks canonical structure and implementation bindings.
+- `npm run moldea:inspect` lists the registered context and agent assets.
 
-See [usage and HTTP sessions](docs/usage.md), [architecture](docs/architecture.md), [project context](moldea/project.md), and [Eve runtime integration](moldea/runtimes/eve.md). The root owns the [release-readiness procedure](agent/skills/release-readiness/SKILL.md).
+See [usage and HTTP sessions](docs/usage.md), [architecture](docs/architecture.md), [project context](moldea/project.md), and [Eve integration](moldea/context/eve-integration.md). The root owns the [release-readiness procedure](agent/skills/release-readiness/SKILL.md).
 
 Canonical agent instructions and selected context documents are the source of Eve's compiled system instructions. Rebuild or use development reload after changing them. The source catalog is tracked in Git; generated runtime data and saved briefs remain local to the application instance.
 

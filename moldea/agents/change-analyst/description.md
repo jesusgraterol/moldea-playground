@@ -1,1 +1,1 @@
-Analyzes a release's changes and recorded evidence to identify customer impact, operational concerns, and unsupported readiness assumptions.
+Use this specialist for the captured release evidence packet before readiness review; it returns change impact and evidence-linked findings.

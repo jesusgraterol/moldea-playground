@@ -11,8 +11,8 @@
     "dev": "eve dev",
     "build": "eve build",
     "typecheck": "tsc --noEmit",
-    "moldea:validate": "moldea validate --json",
-    "moldea:inspect": "moldea inspect --json",
+    "moldea:validate": "node .agents/skills/moldea/scripts/moldea-cli/moldea.mjs validate --json",
+    "moldea:inspect": "node .agents/skills/moldea/scripts/moldea-cli/moldea.mjs inspect --json",
     "dev:app": "eve dev --no-default-extensions",
     "start": "eve start",
     "inspect": "eve info --json"
@@ -23,7 +23,6 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
-    "@moldea.ai/cli": "13.0.4",
     "@types/node": "24.19.2",
     "typescript": "7.0.2"
   }

@@ -14,7 +14,7 @@ The coordinator and reviewer receive all four focused contexts; the analyst rece
 
 The root's assess_release file exports a real defineWorkflowTool. Its executeAssessRelease function begins with use workflow. It calls captureEvidence in a use step helper, then ctx.agent('change-analyst').send with ChangeAnalysisSchema as outputSchema. After completed status and step-backed schema/reference validation, it calls readiness-reviewer with ReadinessReviewSchema and the same captured packet. No implicit conversation or session inheritance is assumed.
 
-Subagent description fields are routing-facing framework metadata. They load the target-owned handoff-description.md content, not the general description.md. The workflow's specialist targets are explicit. Routing remains in Eve code rather than an invented manifest graph.
+Subagent description fields are routing-facing framework metadata. They load the target’s canonical `description.md`. The workflow's specialist targets are explicit. Routing remains in Eve code rather than an invented manifest graph.
 
 Persistence runs in a use step helper after both validated stages. decideReadiness enforces the application decision before saveBrief writes the result. The assess_release tool attaches BriefSummarySchema as its outputSchema. Specialist response schemas are attached at their actual workflow sends, not merely declared in Moldea.
 
